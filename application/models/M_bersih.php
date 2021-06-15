@@ -58,6 +58,201 @@ class M_bersih extends CI_Model{
         return $query->result_array();
     }
 
+    function get_semua_produk_bb(){
+        $sql = "SELECT
+            * 
+        FROM
+            tbl_produk 
+        WHERE
+            produk_kategori = 'HT-000002' 
+            AND produk_aktif = 1
+        ORDER BY produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_stok_jual(){
+        $sql = "SELECT
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id AS produk_id,
+            SUM(
+            CAST( tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS FLOAT )) AS produk_jml 
+        FROM
+            tbl_stok_out_bersih_detail
+            JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id
+            JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) 
+            AND tbl_produk.produk_kategori = 'HT-000002'
+        GROUP BY
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id
+        ORDER BY produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_menu_porsi_jual(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            SUM(CAST( tbl_order_detail.order_detail_jumlah AS FLOAT )) AS produk_jml
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1 AND tbl_produk.produk_kategori = 'HT-000001'
+        GROUP BY
+            tbl_produk.produk_id
+        ORDER BY
+            tbl_produk.produk_kategori, produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_menu_minum_jual(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            SUM(CAST( tbl_order_detail.order_detail_jumlah AS FLOAT )) AS produk_jml
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1 AND tbl_produk.produk_kategori = 'HT-000003'
+        GROUP BY
+            tbl_produk.produk_id
+        ORDER BY
+            tbl_produk.produk_kategori, produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_menu_tambah_jual(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            SUM(CAST( tbl_order_detail.order_detail_jumlah AS FLOAT )) AS produk_jml
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1 AND tbl_produk.produk_kategori = 'HT-000004'
+        GROUP BY
+            tbl_produk.produk_id
+        ORDER BY
+            tbl_produk.produk_kategori, produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_menu_paket_jual(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            SUM(CAST( tbl_order_detail.order_detail_jumlah AS FLOAT )) AS produk_jml
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1 AND tbl_produk.produk_kategori = 'HT-000006'
+        GROUP BY
+            tbl_produk.produk_id
+        ORDER BY
+            tbl_produk.produk_kategori, produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_stok_masuk(){
+        $sql = "SELECT
+            tbl_stok_in_bersih_detail.stok_in_detail_produk_id AS produk_id,
+            SUM(
+            CAST( tbl_stok_in_bersih_detail.stok_in_detail_jumlah AS FLOAT )) AS produk_jml 
+        FROM
+            tbl_stok_in_bersih_detail
+            JOIN tbl_stok_in_bersih ON tbl_stok_in_bersih_detail.stok_in_detail_id = tbl_stok_in_bersih.stok_in_id
+            JOIN tbl_produk ON tbl_stok_in_bersih_detail.stok_in_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_in_bersih.stok_in_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_in_bersih.stok_in_dt_masuk ) = YEAR ( tbl_stok_in_bersih.stok_in_dt_masuk ) 
+            AND tbl_produk.produk_kategori = 'HT-000002'
+        GROUP BY
+            tbl_stok_in_bersih_detail.stok_in_detail_produk_id
+        ORDER BY produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_menu_porsi(){
+        $sql = "SELECT
+            * 
+        FROM
+            tbl_produk 
+        WHERE
+            produk_kategori = 'HT-000001' 
+            AND produk_aktif = 1 
+        ORDER BY
+            produk_kategori, produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+    
+    function get_semua_menu_minum(){
+        $sql = "SELECT
+            * 
+        FROM
+            tbl_produk 
+        WHERE
+            produk_kategori = 'HT-000003' 
+            AND produk_aktif = 1 
+        ORDER BY
+            produk_kategori, produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_menu_tambah(){
+        $sql = "SELECT
+            * 
+        FROM
+            tbl_produk 
+        WHERE
+            produk_kategori = 'HT-000004' 
+            AND produk_aktif = 1 
+        ORDER BY
+            produk_kategori, produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_menu_paket(){
+        $sql = "SELECT
+            * 
+        FROM
+            tbl_produk 
+        WHERE
+            produk_kategori = 'HT-000006' 
+            AND produk_aktif = 1 
+        ORDER BY
+            produk_kategori, produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     function get_stok_masuk(){
         $sql = "SELECT
             tbl_stok_in_bersih_detail.stok_in_detail_produk_id as produk_id,
@@ -215,6 +410,201 @@ class M_bersih extends CI_Model{
 
     function all_stok_produk_bersih(){
         $sql = "SELECT * FROM tbl_produk JOIN tbl_kategori ON tbl_produk.produk_kategori = tbl_kategori.kategori_id WHERE produk_stok = 1 AND produk_aktif = 1 ORDER BY produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_tanggal_stok_jual(){
+        $sql = "SELECT
+            DATE_FORMAT( tbl_stok_out_bersih.stok_out_dt_masuk, '%d-%m-%Y' ) AS stok_out_dt_masuk
+        FROM
+            tbl_stok_out_bersih_detail
+            JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id
+            JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR (
+            tbl_stok_out_bersih.stok_out_dt_masuk)
+        GROUP BY
+        tbl_stok_out_bersih.stok_out_dt_masuk ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_tanggal_stok_masuk(){
+        $sql = "SELECT
+            DATE_FORMAT( tbl_stok_in_bersih.stok_in_dt_masuk, '%d-%m-%Y' ) AS stok_in_dt_masuk
+        FROM
+            tbl_stok_in_bersih_detail
+            JOIN tbl_stok_in_bersih ON tbl_stok_in_bersih_detail.stok_in_detail_id = tbl_stok_in_bersih.stok_in_id
+            JOIN tbl_produk ON tbl_stok_in_bersih_detail.stok_in_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_in_bersih.stok_in_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_in_bersih.stok_in_dt_masuk ) = YEAR (
+            tbl_stok_in_bersih.stok_in_dt_masuk)
+        GROUP BY
+        tbl_stok_in_bersih.stok_in_dt_masuk ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_tanggal_menu(){
+        $sql = "SELECT
+            DATE_FORMAT( tbl_order.order_dt_create, '%d-%m-%Y' ) AS order_dt_create
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1
+        GROUP BY tbl_order.order_dt_create
+        ORDER BY
+            tbl_order.order_dt_create ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_total_stok_jual(){
+        $sql = "SELECT
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id AS produk_id,
+            DATE_FORMAT( tbl_stok_out_bersih.stok_out_dt_masuk, '%d-%m-%Y' ) AS stok_out_dt_masuk,
+            SUM(CAST(tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml
+        FROM
+            tbl_stok_out_bersih_detail
+            JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id
+            JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR (
+            tbl_stok_out_bersih.stok_out_dt_masuk)
+        GROUP BY
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id, tbl_stok_out_bersih.stok_out_dt_masuk 
+        ORDER BY stok_out_dt_masuk, produk_id ASC
+        ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_total_menu_porsi_jual(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            DATE_FORMAT( tbl_order.order_dt_create, '%d-%m-%Y' ) AS order_dt_create,
+            SUM(CAST( tbl_order_detail.order_detail_jumlah AS FLOAT )) AS produk_jml
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1 AND tbl_produk.produk_kategori = 'HT-000001'
+        GROUP BY
+            tbl_produk.produk_id, tbl_order.order_dt_create
+        ORDER BY
+            tbl_produk.produk_kategori, produk_id ASC
+        ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_total_menu_minum_jual(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            DATE_FORMAT( tbl_order.order_dt_create, '%d-%m-%Y' ) AS order_dt_create,
+            SUM(CAST( tbl_order_detail.order_detail_jumlah AS FLOAT )) AS produk_jml
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1 AND tbl_produk.produk_kategori = 'HT-000003'
+        GROUP BY
+            tbl_produk.produk_id, tbl_order.order_dt_create
+        ORDER BY
+            tbl_produk.produk_kategori, produk_id ASC
+        ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_total_menu_tambah_jual(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            DATE_FORMAT( tbl_order.order_dt_create, '%d-%m-%Y' ) AS order_dt_create,
+            SUM(CAST( tbl_order_detail.order_detail_jumlah AS FLOAT )) AS produk_jml
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1 AND tbl_produk.produk_kategori = 'HT-000004'
+        GROUP BY
+            tbl_produk.produk_id, tbl_order.order_dt_create
+        ORDER BY
+            tbl_produk.produk_kategori, produk_id ASC
+        ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_total_menu_paket_jual(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            DATE_FORMAT( tbl_order.order_dt_create, '%d-%m-%Y' ) AS order_dt_create,
+            SUM(CAST( tbl_order_detail.order_detail_jumlah AS FLOAT )) AS produk_jml
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_order.order_dt_create ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_order.order_dt_create ) = YEAR (
+            NOW()) AND tbl_order.order_aktif = 1 AND tbl_produk.produk_kategori = 'HT-000006'
+        GROUP BY
+            tbl_produk.produk_id, tbl_order.order_dt_create
+        ORDER BY
+            tbl_produk.produk_kategori, produk_id ASC
+        ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_total_stok_masuk(){
+        $sql = "SELECT
+            tbl_stok_in_bersih_detail.stok_in_detail_produk_id AS produk_id,
+            DATE_FORMAT( tbl_stok_in_bersih.stok_in_dt_masuk, '%d-%m-%Y' ) AS stok_in_dt_masuk,
+            SUM(CAST(tbl_stok_in_bersih_detail.stok_in_detail_jumlah AS FLOAT)) AS produk_jml
+        FROM
+            tbl_stok_in_bersih_detail
+            JOIN tbl_stok_in_bersih ON tbl_stok_in_bersih_detail.stok_in_detail_id = tbl_stok_in_bersih.stok_in_id
+            JOIN tbl_produk ON tbl_stok_in_bersih_detail.stok_in_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_in_bersih.stok_in_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_in_bersih.stok_in_dt_masuk ) = YEAR (
+            tbl_stok_in_bersih.stok_in_dt_masuk)
+        GROUP BY
+            tbl_stok_in_bersih_detail.stok_in_detail_produk_id, tbl_stok_in_bersih.stok_in_dt_masuk 
+        ORDER BY stok_in_dt_masuk, produk_id ASC
+        ";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
