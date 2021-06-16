@@ -90,9 +90,12 @@ class Produk extends CI_Controller{
 
 	    foreach($empQuery->result_array() as $row){
 			$hasil_convert = number_format((int)$row['produk_harga'], 0, ',', '.');
-			$cek = '<button value="'.$row['produk_id'].'" type="button" class="btn btn-block btn-secondary" data-toggle="modal" data-target="#modal-default" data-whatever="'.$row['produk_id'].'" data-keyboard="false" data-backdrop="static">
+			$cek = '<button style="width: 60px;" value="'.$row['produk_id'].'" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-default" data-whatever="'.$row['produk_id'].'" data-keyboard="false" data-backdrop="static">
 					<i class="fas fa-info-circle"></i>
-				</button>';
+					</button>
+					<button style="width: 60px;" value="'.$row['produk_id'].'" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-edit" data-whatever="'.$row['produk_id'].'" data-keyboard="false" data-backdrop="static">
+					<i class="fas fa-edit"></i>
+					</button>';
 
             $data[] = array( 
                 "produk_id"=>$row['produk_id'],
@@ -495,6 +498,34 @@ class Produk extends CI_Controller{
 		redirect('Administrator/stok_in');
 	}
 
+	function edit_detail_produk(){
+		$id = $this->input->post('produk_id', TRUE);
+
+		$data = array(
+			'produk_nama' => $this->input->post('produk_nama', TRUE),
+			'produk_kategori' => $this->input->post('produk_kategori', TRUE),
+			'produk_harga' => $this->input->post('produk_harga', TRUE),
+			'produk_satuan' => $this->input->post('produk_satuan', TRUE)
+		);
+
+		$this->M_produk->update_detail_produk($id, $data);
+	}
+
+	function edit_resep_produk(){
+		$resep = $this->input->post('resep', TRUE);
+		$array_resep = array();
+
+		for($i=0; $i < count($resep); $i++){
+			array_push($array_resep, array(
+				'resep_produk_id' => $resep[$i][0],
+				'resep_produk_bb' => $resep[$i][1],
+				'resep_produk_jml' => $resep[$i][2]
+			));
+		}
+
+		print_r($array_resep);
+	}
+
 	function tambah_stok_out_baru(){
 		$data = array(
 			'stok_out_id' => $this->get_kode_stok_out(),
@@ -608,6 +639,12 @@ class Produk extends CI_Controller{
 
         echo json_encode($data);
     }
+
+	function get_kategori(){
+		$data = $this->M_produk->get_kategori();
+
+		echo json_encode($data);
+	}
 
 	function get_detail_produk(){
 		$id = $this->input->get('id', TRUE);

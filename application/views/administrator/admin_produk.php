@@ -195,7 +195,7 @@
                   data: 'produk_harga', className: 'text-right'
               },
               {
-                  data: 'cek'
+                  data: 'cek', className: 'text-right'
               }
           ]
       });
@@ -371,5 +371,217 @@
               }, 'json');
           }, 'json');
         });
+      </script>
+
+      <div class="modal fade" id="modal-edit">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">EDIT DETAIL PRODUK : </h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-borderless table-striped">
+                <tr>
+                  <td>Nama</td>
+                  <td>:</td>
+                  <td><input type="text" id="produk_nama_edit" name="produk_nama_edit" style="margin: 0;"></td>
+                </tr>
+                <tr>
+                  <td>Kategori</td>
+                  <td>:</td>
+                  <td><select id="produk_kategori_edit" name="produk_kategori_edit" style="margin: 0;"></select></td>
+                </tr>
+                <tr>
+                  <td>Harga</td>
+                  <td>:</td>
+                  <td><input type="text" name="produk_harga_edit" id="produk_harga_edit" style="margin: 0;"></td>
+                </tr>
+                <tr>
+                  <td>Satuan</td>
+                  <td>:</td>
+                  <td><input type="text" name="produk_satuan_edit" id="produk_satuan_edit" style="margin: 0;"></td>
+                </tr>
+              </table>
+              <br>
+              <br>
+              <div id="resep_bb_edit" style="display: none;">
+                <table id="resep_edit" class="table table-bordered" >
+                  <thead>
+                    <tr>
+                      <th style="text-align: right;">No.</th>
+                      <th>Nama Bahan Baku</th>
+                      <th style="text-align: right;">Jumlah Takaran</th>
+                    </tr>
+                  </thead>
+                  <tbody id="resep-isi-edit">
+                  </tbody>
+                </table>
+                <button class="btn btn-secondary" id="tambah_resep" style="display: none;">Tambah Resep</button>
+                <button class="btn btn-secondary" id="button_edit_resep">Edit Resep</button>
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+            <input type="hidden" name="produk_id_edit" id="produk_id_edit">
+            <input type="hidden" name="produk_jenis_edit" id="produk_jenis_edit">
+            <button class="btn btn-success" id="submit_edit" name="submit_edit">Simpan</button>
+            
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <script>
+        function uang(uang){
+            var reverse = uang.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan
+        }
+
+        $('#button_edit_resep').on('click', function(){
+          var colCount = $("#resep_edit tr").length;
+          for(var i=0; i < colCount-1; i++){
+            id = $('#resep_nama_edit'+i).val();
+
+            $.ajax({
+							url : "<?php echo base_url().'Bersih/get_semua_stok_kotor'?>",
+							method : "GET",
+							async : false,
+							dataType : 'json',
+							success: function(data){
+								var html = '<option value="">--- ---</option>';
+                var x;
+
+                for(x=0; x<data.produk.length; x++){
+                    html += `<option value='${data.produk[x].produk_id}'>${data.produk[x].produk_nama}</option>`;
+                }
+
+                $('#resep_jumlah_edit'+i).prop('disabled', false);
+                $('#resep_nama_edit'+i).html(html);
+                $('#resep_nama_edit'+i).val(id);
+                $('#tambah_resep').show();
+                $('#button_edit_resep').hide();
+							}
+						});
+          }
+        });
+
+        // tambah resep
+        var count = ($("#resep_edit tr").length);
+        var wrapper = $('#resep-isi-edit');
+        $('#tambah_resep').on('click', function(){
+          count += 1;
+          $(wrapper).append(`
+            <tr>
+              <td style="text-align: right;">${count+1}.</td>
+              <td><select name="resep_nama_edit" id="resep_nama_edit${count}"></select></td>
+              <td style="text-align: right;"><input type="text" name="resep_jumlah_edit" id="resep_jumlah_edit${count}" style="text-align: right;"></td>
+            </tr>
+          `);
+
+          $.get("<?php echo base_url().'Bersih/get_semua_stok_kotor'?>", function(data){
+              var html = '<option value="">--- ---</option>';
+              var i;
+
+              for(i=0; i<data.produk.length; i++){
+                  html += `<option value='${data.produk[i].produk_id}'>${data.produk[i].produk_nama}</option>`;
+              }
+
+              $('#resep_nama_edit'+count).html(html);
+          }, 'json')
+
+        });
+
+        $('#modal-edit').on('show.bs.modal', function(event) {
+          var button = $(event.relatedTarget)
+          var recipient = button.data('whatever')
+          var modal = $(this);
+          var dataString = 'id=' + recipient
+          $.get('<?php echo base_url('Produk/get_detail_produk')?>', dataString, function(data){
+              $('#tambah_resep').hide();
+              $('#button_edit_resep').show();
+              $('#produk_nama_edit').val(data.detail[0].produk_nama);
+              // $('#produk_kategori_edit').html(data.detail[0].produk_kategori);
+              $('#produk_harga_edit').val(uang(data.detail[0].produk_harga));
+              $('#produk_satuan_edit').val(data.detail[0].produk_satuan);
+
+              $('#produk_id_edit').val(recipient);
+              $('#produk_jenis_edit').val(data.detail[0].produk_jenis);
+
+                var id = data.detail[0].kategori_id;
+
+                $.get('<?php echo base_url('Produk/get_kategori')?>', {id: id}, function(data){
+                  var html = '<option value= "0">-- Pilih --</option>';
+                  
+                  for(var i=0; i < data.length; i++){
+                    html += `<option value="${data[i].kategori_id}">${data[i].kategori_nama}</option>`;
+                  }
+                  $('#produk_kategori_edit').html(html);
+                  $('#produk_kategori_edit').val(id);
+                } ,'json');
+              
+              $('#resep_bb_edit').hide();
+              var pid = data.detail[0].produk_id;
+              var dataResep = 'id='+pid;
+              $.get('<?php echo base_url('Produk/get_resep_produk')?>', dataResep, function(data){
+                var html = ''
+                
+                for(var i = 0; i < data.resep.length; i++){
+                  html += `
+                    <tr>
+                      <td style="text-align: right;">${i+1}.</td>
+                      <td><select name="resep_nama_edit" id="resep_nama_edit${i}"><option value="${data.resep[i].produk_id}">${data.resep[i].produk_nama}</option></select></td>
+                      <td style="text-align: right;"><input type="text" name="resep_jumlah_edit" id="resep_jumlah_edit${i}" value="${data.resep[i].produk_jml}" style="text-align: right;" disabled></td>
+                    </tr>
+                  `;
+                }
+                if(html != ''){
+                  $('#resep_bb_edit').show();
+                  $('#resep-isi-edit').html(html);
+                }
+                
+              }, 'json');
+          }, 'json');
+        });
+
+        $('#submit_edit').on('click', function(){
+          var panjang = $("#resep_edit tr").length;
+
+          var produk_nama = $('#produk_nama_edit').val();
+          var produk_kategori = $('#produk_kategori_edit option:selected').val();
+          var produk_harga = $('#produk_harga_edit').val();
+          var produk_satuan = $('#produk_satuan_edit').val();
+          var produk_id = $('#produk_id_edit').val();
+
+          var dataString = 'produk_nama='+produk_nama+'&produk_kategori='+produk_kategori+'&produk_harga='+produk_harga+'&produk_satuan='+produk_satuan+'&produk_id='+produk_id;
+
+          $.post("<?php echo base_url('Produk/edit_detail_produk')?>", dataString, function(data){
+
+          });
+
+          if($('#produk_jenis_edit').val() == 2){
+            var resep = [];
+            resep.push([]);
+
+            for(var y=0;y <= panjang; y++){
+              resep.push([]);
+            }
+
+            for(var x=0; x <= panjang; x++){
+              resep[x].push($('#produk_id_edit').val());
+              resep[x].push($('#resep_nama_edit'+x).val());
+              resep[x].push($('#resep_jumlah_edit'+x).val());
+            }
+
+            $.post("<?php echo base_url('Produk/edit_resep_produk')?>", {resep:resep}, function(data){
+
+            });
+          }
+
+        })
       </script>
 <?php $this->load->view('mainmenu/admin_footer'); ?>

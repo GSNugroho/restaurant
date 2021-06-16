@@ -45,6 +45,12 @@ class M_produk extends CI_Model{
         return $query;
     }
 
+    function get_kategori(){
+        $sql = "SELECT * FROM tbl_kategori";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     function get_data_keterangan_stok_in($id){
         $sql = "SELECT
             stok_in_id,
@@ -66,7 +72,9 @@ class M_produk extends CI_Model{
         $sql = "SELECT
             tbl_produk.produk_id AS produk_id,
             tbl_produk.produk_nama AS produk_nama,
+            tbl_produk.produk_jenis AS produk_jenis,
             tbl_kategori.kategori_nama AS produk_kategori,
+            tbl_kategori.kategori_id AS kategori_id,
             tbl_produk.produk_harga AS produk_harga,
             tbl_produk.produk_satuan AS produk_satuan,
             tbl_produk_foto.foto_nama AS produk_gambar
@@ -82,6 +90,7 @@ class M_produk extends CI_Model{
     function get_detail_resep($id){
         $sql = "SELECT
             tbl_produk.produk_nama AS produk_nama,
+            tbl_produk.produk_id AS produk_id,
             tbl_resep_produk.resep_produk_jml AS produk_jml 
         FROM
             tbl_resep_produk
