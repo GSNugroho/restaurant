@@ -365,7 +365,7 @@
                     <td>&nbsp;</td>
                     <td>
                       <div class="form-group">
-                        <input class="form-control" type="text" id="pelanggan_diskon" name="pelanggan_diskon" style="text-align: right;" placeholder="%">
+                        <input class="form-control" type="hidden" id="pelanggan_diskon" name="pelanggan_diskon" style="text-align: right;" placeholder="%" value="0">
                       </div>
                     </td>
                   </tr>
