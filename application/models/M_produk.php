@@ -32,11 +32,20 @@ class M_produk extends CI_Model{
         $this->db->insert('tbl_stok_out', $data);
     }
 
+    function hapus_resep_sebelumnya($id){
+        $this->db->delete('tbl_resep_produk', $id);
+    }
+
     function update_foto_produk_baru($name){
         $sql = "UPDATE tbl_produk_foto
         SET foto_aktif = 0
         WHERE foto_nama LIKE '%$name%'";
         $query = $this->db->query($sql);
+    }
+
+    function update_detail_produk($id, $data){
+        $this->db->where('produk_id', $id);
+        $this->db->update('tbl_produk', $data);
     }
 
     function cek_data_nama_stok($produk_id){

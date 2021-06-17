@@ -515,6 +515,9 @@ class Produk extends CI_Controller{
 		$resep = $this->input->post('resep', TRUE);
 		$array_resep = array();
 
+		$id_hapus = array(
+			'resep_produk_id' => $resep[0][0]
+		);
 		for($i=0; $i < count($resep); $i++){
 			array_push($array_resep, array(
 				'resep_produk_id' => $resep[$i][0],
@@ -524,6 +527,9 @@ class Produk extends CI_Controller{
 		}
 
 		print_r($array_resep);
+		$this->M_produk->hapus_resep_sebelumnya($id_hapus);
+
+		$this->M_produk->insert_resep_menu_batch($array_resep);
 	}
 
 	function tambah_stok_out_baru(){

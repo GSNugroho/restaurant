@@ -132,9 +132,9 @@
   </div>
   <script>
   $(document).ready(function() {
-      setInterval(function(){ 
-        $('#tbl_produk').DataTable().ajax.reload();
-      }, 10000);
+      // setInterval(function(){ 
+      //   $('#tbl_produk').DataTable().ajax.reload();
+      // }, 10000);
 
       var table = $('#tbl_produk').DataTable({
           language: {
@@ -471,15 +471,16 @@
         });
 
         // tambah resep
-        var count = ($("#resep_edit tr").length);
+        
         var wrapper = $('#resep-isi-edit');
         $('#tambah_resep').on('click', function(){
+          var count = ($("#resep_edit tr").length-1);
           count += 1;
           $(wrapper).append(`
             <tr>
-              <td style="text-align: right;">${count+1}.</td>
-              <td><select name="resep_nama_edit" id="resep_nama_edit${count}"></select></td>
-              <td style="text-align: right;"><input type="text" name="resep_jumlah_edit" id="resep_jumlah_edit${count}" style="text-align: right;"></td>
+              <td style="text-align: right;">${count}.</td>
+              <td><select name="resep_nama_edit" id="resep_nama_edit${count-1}"></select></td>
+              <td style="text-align: right;"><input type="text" name="resep_jumlah_edit" id="resep_jumlah_edit${count-1}" style="text-align: right;"></td>
             </tr>
           `);
 
@@ -491,7 +492,7 @@
                   html += `<option value='${data.produk[i].produk_id}'>${data.produk[i].produk_nama}</option>`;
               }
 
-              $('#resep_nama_edit'+count).html(html);
+              $('#resep_nama_edit'+(count-1)).html(html);
           }, 'json')
 
         });
@@ -506,7 +507,7 @@
               $('#button_edit_resep').show();
               $('#produk_nama_edit').val(data.detail[0].produk_nama);
               // $('#produk_kategori_edit').html(data.detail[0].produk_kategori);
-              $('#produk_harga_edit').val(uang(data.detail[0].produk_harga));
+              $('#produk_harga_edit').val(data.detail[0].produk_harga);
               $('#produk_satuan_edit').val(data.detail[0].produk_satuan);
 
               $('#produk_id_edit').val(recipient);
@@ -549,7 +550,7 @@
         });
 
         $('#submit_edit').on('click', function(){
-          var panjang = $("#resep_edit tr").length;
+          var panjang = ($("#resep_edit tr").length - 2);
 
           var produk_nama = $('#produk_nama_edit').val();
           var produk_kategori = $('#produk_kategori_edit option:selected').val();
@@ -560,7 +561,8 @@
           var dataString = 'produk_nama='+produk_nama+'&produk_kategori='+produk_kategori+'&produk_harga='+produk_harga+'&produk_satuan='+produk_satuan+'&produk_id='+produk_id;
 
           $.post("<?php echo base_url('Produk/edit_detail_produk')?>", dataString, function(data){
-
+            $('#modal-edit').modal('hide');
+            $('#tbl_produk').DataTable().ajax.reload();
           });
 
           if($('#produk_jenis_edit').val() == 2){
