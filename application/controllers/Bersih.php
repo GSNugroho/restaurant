@@ -98,6 +98,7 @@ class Bersih extends CI_Controller {
             'order_dt_create' => date('Y-m-d H:i:s'),
             'order_user_create' => $this->session->userdata('nama'),
             'order_aktif' => 1,
+            'order_keterangan' => $this->input->post('keterangan', true)
         );
 
         $this->M_bersih->insert_order($data);
@@ -106,6 +107,7 @@ class Bersih extends CI_Controller {
     function tambah_order_baru_detail(){
         $data = $this->input->post('data', true);
         $produk_data = array();
+        $catatan = "Stok Keluar Generate Otomatis Dari Sistem";
 
         $cek_tgl_stok_out_akhir = $this->M_bersih->cek_tgl_stok_out_akhir();
 
@@ -117,7 +119,8 @@ class Bersih extends CI_Controller {
                         'stok_out_dt_masuk' => date('Y-m-d'),
                         'stok_out_dt_create' => date('Y-m-d H:i:s'),
                         'stok_out_user_create' => $this->session->userdata('nama'),
-                        'stok_out_aktif' => 1
+                        'stok_out_aktif' => 1,
+                        'catatan' => $catatan
                     );
     
                     $this->M_bersih->insert_data_stok_out($data_stok_out_bersih);
@@ -129,7 +132,8 @@ class Bersih extends CI_Controller {
                 'stok_out_dt_masuk' => date('Y-m-d'),
                 'stok_out_dt_create' => date('Y-m-d H:i:s'),
                 'stok_out_user_create' => $this->session->userdata('nama'),
-                'stok_out_aktif' => 1
+                'stok_out_aktif' => 1,
+                'catatan' => $catatan
             );
 
             $this->M_bersih->insert_data_stok_out($data_stok_out_bersih);
@@ -417,10 +421,10 @@ class Bersih extends CI_Controller {
 			</button>';
 
             $data[] = array( 
-                "stok_out_dt_create"=>$row['stok_out_dt_create'],
+                "stok_out_dt_masuk"=>$row['stok_out_dt_masuk'],
                 "stok_out_id"=>$row['stok_out_id'],
                 "catatan"=>$row['catatan'],
-                "stok_out_dt_masuk"=>$row['stok_out_dt_masuk'],
+                "user_create"=>$row['user_create'],
                 "cek"=>$cek
             );
 		}
@@ -680,7 +684,8 @@ class Bersih extends CI_Controller {
             'pembelian_bb' => $this->M_bersih->itung_pembelian_bb(),
             'tanggal' => $this->M_bersih->get_tanggal(),
             'stok_masuk' => $this->M_bersih->get_stok_masuk(),
-            'stok_jual' => $this->M_bersih->get_stok_jual()
+            'stok_jual' => $this->M_bersih->get_stok_jual(),
+            'stok_jual_nc' => $this->M_bersih->get_stok_jual_nc()
         );
 
         echo json_encode($data);
@@ -694,7 +699,9 @@ class Bersih extends CI_Controller {
             'tanggal' => $this->M_bersih->get_tanggal_stok_jual(),
             'produk' => $this->M_bersih->get_semua_produk_bb(),
             'stok_jual' => $this->M_bersih->get_total_stok_jual(),
+            'stok_jual_nc' => $this->M_bersih->get_total_stok_jual_nc(),
             'total' => $this->M_bersih->get_semua_stok_jual(),
+            'total_nc' => $this->M_bersih->get_semua_stok_jual_nc(),
             'tanggal_menu' => $this->M_bersih->get_tanggal_menu(),
             'menu_porsi' => $this->M_bersih->get_semua_menu_porsi(),
             'menu_porsi_jual' => $this->M_bersih->get_total_menu_porsi_jual(),

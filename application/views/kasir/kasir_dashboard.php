@@ -19,16 +19,18 @@
     cursor: pointer;
     outline: none;
     color: #fff;
-    background-color: #6c757d;
+    /* background-color: #6c757d; */
     border: none;
     border-radius: 15px;
-    box-shadow: 0 9px #6c757d;
+    /* box-shadow: 0 9px #6c757d; */
     }
 
-    .imageku:hover {background-color: #3e8e41}
+    .imageku:hover {
+      /* background-color: #3e8e41 */
+    }
 
     .imageku:active {
-    background-color: #3e8e41;
+    /* background-color: #3e8e41; */
     box-shadow: 0 5px #666;
     transform: translateY(4px);
     }
@@ -126,7 +128,7 @@
                     var add = 1;
                     var dataString = 'produk_id='+value;
                     var cek = '';
-                    var wrapper = $('#produk_lain');
+                    var wrapper = $('#isi_tbl_pesanan');
 
                     if($("#tbl_pesanan tr").length <= 1){
                         $.get("<?php echo base_url().'Produk/get_produk_detail';?>", dataString, function(data){
@@ -147,6 +149,12 @@
                             $('#isi_tbl_pesanan').append(html);
                             no++;
                         }, 'json');
+                        $(wrapper).on("click",".remove_field", function(e){
+                          e.preventDefault(); $(this).closest('tr').remove(); 
+                          if(no != 1){
+                            no--;
+                          }
+                        })
                     }else{
                       var number = 0;
                       var row = 0;
@@ -187,6 +195,13 @@
                               $('#isi_tbl_pesanan').append(html);
                               no++;
                           }, 'json');
+
+                          $(wrapper).on("click",".remove_field", function(e){
+                          e.preventDefault(); $(this).closest('tr').remove(); 
+                          if(no != 1){
+                            no--;
+                          }
+                        })
                       }
                     }
                 }
@@ -357,7 +372,7 @@
                     </div>
                     </td>
                     <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <td>
+                    <!-- <td>
                       <div class="form-group">
                         <label>Diskon</label>
                       </div>
@@ -366,6 +381,19 @@
                     <td>
                       <div class="form-group">
                         <input class="form-control" type="hidden" id="pelanggan_diskon" name="pelanggan_diskon" style="text-align: right;" placeholder="%" value="0">
+                      </div>
+                    </td> -->
+                  </tr>
+                  <tr>
+                    <td>
+                      <div class="form-group">
+                        <label>Keterangan</label>
+                      </div>
+                    </td>
+                    <td>&nbsp;</td>
+                    <td>
+                      <div class="form-group">
+                        <textarea class= "form-control" id="keterangan" name="keterangan"></textarea>
                       </div>
                     </td>
                   </tr>
@@ -494,11 +522,12 @@
           var pelanggan_byr = $('#pelanggan_byr').val();
           var kon_total = $('#total_semua').html();
           var total_byr_pesanan = kon_total.replace(/[.]/g, "");
+          var keterangan = $('#keterangan').val();
 
           if(pelanggan_byr == total_byr_pesanan){
             
           }
-          var dataString = 'pelanggan_nm='+pelanggan_nm+'&pelanggan_diskon='+pelanggan_diskon+'&pelanggan_byr='+pelanggan_byr+'&total_byr_pesanan='+total_byr_pesanan+'&kode='+kode;
+          var dataString = 'pelanggan_nm='+pelanggan_nm+'&pelanggan_diskon='+pelanggan_diskon+'&pelanggan_byr='+pelanggan_byr+'&total_byr_pesanan='+total_byr_pesanan+'&kode='+kode+'&keterangan='+keterangan;
           
           $.post("<?php echo base_url().'Bersih/tambah_order_baru';?>", dataString, function(data){
             

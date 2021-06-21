@@ -180,6 +180,12 @@
                 }
               }
 
+              for(var g=0; g < data.stok_jual_nc.length; g++){
+                if(data.stok_jual_nc[g].stok_out_dt_masuk == data.tanggal[x].stok_in_dt_masuk){
+                  jual_stok += data.stok_jual_nc[g].jumlah_stok * data.stok_jual_nc[g].harga;
+                }
+              }
+
               // kas masuk
               htmla += `<td style="text-align: right;">${uang(harga_jual)}</td>`;
 

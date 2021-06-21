@@ -84,10 +84,36 @@ class M_bersih extends CI_Model{
             MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
             NOW()) 
             AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) 
-            AND tbl_produk.produk_kategori = 'HT-000002'
+            AND (tbl_produk.produk_kategori = 'HT-000002' OR tbl_produk.produk_kategori = 'HT-000005')
+            AND tbl_produk.produk_count != '0'
         GROUP BY
-            tbl_stok_out_bersih_detail.stok_out_detail_produk_id
-        ORDER BY produk_id ASC";
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id 
+        ORDER BY
+            produk_id ASC";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_semua_stok_jual_nc(){
+        $sql = "SELECT
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id AS produk_id,
+            SUM(
+            CAST( tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS FLOAT )) AS produk_jml 
+        FROM
+            tbl_stok_out_bersih_detail
+            JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id
+            JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) 
+            AND (tbl_produk.produk_kategori = 'HT-000002' OR tbl_produk.produk_kategori = 'HT-000005')
+            AND tbl_produk.produk_count = '0' 
+            AND tbl_stok_out_bersih.stok_out_user_create NOT LIKE 'Teller 1'
+        GROUP BY
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id 
+        ORDER BY
+            produk_id ASC";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
@@ -285,7 +311,28 @@ class M_bersih extends CI_Model{
             MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
             NOW()) 
             AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR (
-            tbl_stok_out_bersih.stok_out_dt_masuk)";
+            tbl_stok_out_bersih.stok_out_dt_masuk)
+            AND tbl_produk.produk_count = '1' ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_stok_jual_nc(){
+        $sql = "SELECT
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id AS produk_id,
+            tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS jumlah_stok,
+            tbl_produk.produk_harga AS harga,
+            DATE_FORMAT( tbl_stok_out_bersih.stok_out_dt_masuk, '%d-%m-%Y' ) AS stok_out_dt_masuk 
+        FROM
+            tbl_stok_out_bersih_detail
+            JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id
+            JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR (
+            tbl_stok_out_bersih.stok_out_dt_masuk)
+            AND tbl_produk.produk_count = '0' AND tbl_stok_out_bersih.stok_out_user_create NOT LIKE 'Teller 1'";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
@@ -483,6 +530,31 @@ class M_bersih extends CI_Model{
             NOW()) 
             AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR (
             tbl_stok_out_bersih.stok_out_dt_masuk)
+            AND tbl_produk.produk_count != '0'
+        GROUP BY
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id, tbl_stok_out_bersih.stok_out_dt_masuk 
+        ORDER BY stok_out_dt_masuk, produk_id ASC
+        ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_total_stok_jual_nc(){
+        $sql = "SELECT
+            tbl_stok_out_bersih_detail.stok_out_detail_produk_id AS produk_id,
+            DATE_FORMAT( tbl_stok_out_bersih.stok_out_dt_masuk, '%d-%m-%Y' ) AS stok_out_dt_masuk,
+            SUM(CAST(tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml
+        FROM
+            tbl_stok_out_bersih_detail
+            JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id
+            JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
+            NOW()) 
+            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR (
+            tbl_stok_out_bersih.stok_out_dt_masuk)
+            AND tbl_produk.produk_count = '0' 
+            AND tbl_stok_out_bersih.stok_out_user_create NOT LIKE 'Teller 1'
         GROUP BY
             tbl_stok_out_bersih_detail.stok_out_detail_produk_id, tbl_stok_out_bersih.stok_out_dt_masuk 
         ORDER BY stok_out_dt_masuk, produk_id ASC
@@ -653,7 +725,9 @@ class M_bersih extends CI_Model{
         $sql = "SELECT
             tbl_produk.produk_id AS produk_id,
             tbl_produk.produk_nama AS produk_nama,
-            SUM(CAST(tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml
+            SUM(CAST(tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml,
+            tbl_produk.produk_count AS produk_count,
+            tbl_stok_out_bersih.stok_out_user_create AS user_create
         FROM
             tbl_stok_out_bersih
             JOIN tbl_stok_out_bersih_detail ON tbl_stok_out_bersih.stok_out_id = tbl_stok_out_bersih_detail.stok_out_detail_id
@@ -661,7 +735,7 @@ class M_bersih extends CI_Model{
         WHERE
             tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_out_bersih.stok_out_aktif = 1 AND DATE_FORMAT(tbl_stok_out_bersih.stok_out_dt_masuk, '%d-%m-%Y') = DATE_FORMAT(NOW(),'%d-%m-%Y')
         GROUP BY 
-            tbl_produk.produk_id, tbl_produk.produk_nama
+            tbl_produk.produk_id, tbl_produk.produk_nama, tbl_produk.produk_count, tbl_stok_out_bersih.stok_out_user_create
         ORDER BY
             tbl_produk.produk_id ASC";
         
@@ -673,7 +747,9 @@ class M_bersih extends CI_Model{
         $sql = "SELECT
             tbl_produk.produk_id AS produk_id,
             tbl_produk.produk_nama AS produk_nama,
-            SUM(CAST(tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml
+            SUM(CAST(tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml,
+            tbl_produk.produk_count AS produk_count,
+            tbl_stok_out_bersih.stok_out_user_create AS user_create
         FROM
             tbl_stok_out_bersih
             JOIN tbl_stok_out_bersih_detail ON tbl_stok_out_bersih.stok_out_id = tbl_stok_out_bersih_detail.stok_out_detail_id
@@ -681,7 +757,7 @@ class M_bersih extends CI_Model{
         WHERE
             tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_out_bersih.stok_out_aktif = 1 AND DATE_FORMAT(tbl_stok_out_bersih.stok_out_dt_masuk, '%d-%m-%Y') != DATE_FORMAT(NOW(),'%d-%m-%Y')
         GROUP BY 
-            tbl_produk.produk_id, tbl_produk.produk_nama
+            tbl_produk.produk_id, tbl_produk.produk_nama, tbl_produk.produk_count, tbl_stok_out_bersih.stok_out_user_create
         ORDER BY
             tbl_produk.produk_id ASC";
         
@@ -772,7 +848,8 @@ class M_bersih extends CI_Model{
             tbl_produk.produk_nama AS produk_nama,
             tbl_produk.produk_id AS produk_id,
             tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS stok_out_detail_jumlah,
-            tbl_produk.produk_satuan AS produk_satuan
+            tbl_produk.produk_satuan AS produk_satuan,
+            tbl_produk.produk_count AS produk_count
         FROM
             tbl_stok_out_bersih_detail
             JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id
@@ -875,7 +952,8 @@ class M_bersih extends CI_Model{
         tbl_stok_out_bersih.stok_out_id as stok_out_id,
         DATE_FORMAT(tbl_stok_out_bersih.stok_out_dt_create, '%d-%m-%Y %H:%i:%s') as stok_out_dt_create,
         DATE_FORMAT(tbl_stok_out_bersih.stok_out_dt_masuk, '%d-%m-%Y') as stok_out_dt_masuk,
-        tbl_stok_out_bersih.catatan as catatan
+        tbl_stok_out_bersih.catatan as catatan,
+        tbl_stok_out_bersih.stok_out_user_create as user_create
         FROM tbl_stok_out_bersih
         WHERE 1=1 ".$searchQuery." ORDER BY ".$columnName." "
         .$columnSortOrder." LIMIT ".$baris.", ".$rowperpage;

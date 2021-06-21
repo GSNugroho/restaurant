@@ -62,10 +62,10 @@
                     <table id="tbl_stok_out" class="table table-borderless table-striped">
                         <thead>
                         <tr>
-                            <th class="text-left">WAKTU SUBMIT</th>
+                            <th class="text-left">TANGGAL</th>
                             <th class="text-left" style="display: none;">ID STOK MASUK</th>
                             <th class="text-left">CATATAN</th>
-                            <th class="text-left">TANGGAL</th>
+                            <th class="text-left">USER</th>
                             <th></th>
                         </tr>
                         </thead>
@@ -123,7 +123,7 @@
             },
             'columns': [
                 {
-                    data: 'stok_out_dt_create'
+                    data: 'stok_out_dt_masuk'
                 },
                 {
                     data: 'stok_out_id'
@@ -132,7 +132,7 @@
                     data: 'catatan'
                 },
                 {
-                    data: 'stok_out_dt_masuk'
+                    data: 'user_create'
                 },
                 {
                     data: 'cek'
@@ -199,28 +199,54 @@
               var i;
               var j;
 
-              for(j=0; j < data.produk.length; j++){
-                var jumlah = 0;
-                var nama = '';
-                var satuan = '';
-                for(i=0; i < data.detail_produk.length; i++){
-                  if(data.produk[j].produk_id == data.detail_produk[i].produk_id){
-                    jumlah += parseFloat(data.detail_produk[i].stok_out_detail_jumlah);
-                    nama = data.detail_produk[i].produk_nama;
-                    satuan = data.detail_produk[i].produk_satuan;
+              if(data.keterangan[0].stok_out_user_create == 'Teller 1'){
+                for(j=0; j < data.produk.length; j++){
+                  var jumlah = 0;
+                  var nama = '';
+                  var satuan = '';
+                  for(i=0; i < data.detail_produk.length; i++){
+                    if((data.produk[j].produk_id == data.detail_produk[i].produk_id) && (data.detail_produk[i].produk_count != '0')){
+                      jumlah += parseFloat(data.detail_produk[i].stok_out_detail_jumlah);
+                      nama = data.detail_produk[i].produk_nama;
+                      satuan = data.detail_produk[i].produk_satuan;
+                    }
                   }
+                  if(nama != ''){
+                    html += `
+                          <tr>
+                              <td style="text-align: center;">${nama}</td>
+                              <td style="text-align: right;">${jumlah.toFixed(2)}</td>
+                              <td style="text-align: center;">${satuan}</td>
+                          </tr>
+                      `;
+                  }
+                  
                 }
-                if(nama != ''){
-                  html += `
-                        <tr>
-                            <td style="text-align: center;">${nama}</td>
-                            <td style="text-align: right;">${jumlah.toFixed(2)}</td>
-                            <td style="text-align: center;">${satuan}</td>
-                        </tr>
-                    `;
+              }else{
+                for(j=0; j < data.produk.length; j++){
+                  var jumlah = 0;
+                  var nama = '';
+                  var satuan = '';
+                  for(i=0; i < data.detail_produk.length; i++){
+                    if(data.produk[j].produk_id == data.detail_produk[i].produk_id){
+                      jumlah += parseFloat(data.detail_produk[i].stok_out_detail_jumlah);
+                      nama = data.detail_produk[i].produk_nama;
+                      satuan = data.detail_produk[i].produk_satuan;
+                    }
+                  }
+                  if(nama != ''){
+                    html += `
+                          <tr>
+                              <td style="text-align: center;">${nama}</td>
+                              <td style="text-align: right;">${jumlah.toFixed(2)}</td>
+                              <td style="text-align: center;">${satuan}</td>
+                          </tr>
+                      `;
+                  }
+                  
                 }
-                
               }
+              
 
               $('#detail_stok_out').html(html);
           }, 'json');

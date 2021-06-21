@@ -67,7 +67,7 @@
                         <thead>
                             <tr>
                                 <th>NAMA PRODUK <span style="color: red;">*</span></th>
-                                <th>JUMLAH <span style="color: red;">*</span></th>
+                                <th style="text-align: right;">JUMLAH <span style="color: red;">*</span></th>
                                 <th style="display: none;">SATUAN</th>
                                 <th style="display: none;">NILAI STOK</th>
                                 <th></th>

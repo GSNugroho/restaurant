@@ -396,6 +396,12 @@
                         jml_stok += parseInt(data.stok_jual[y].produk_jml);
                     }
                 }
+
+                for(var y=0; y < data.stok_jual_nc.length; y++){
+                    if((data.stok_jual_nc[y].stok_out_dt_masuk == data.tanggal[x].stok_out_dt_masuk) && (data.stok_jual_nc[y].produk_id == data.produk[z].produk_id)){
+                        jml_stok += parseInt(data.stok_jual_nc[y].produk_jml);
+                    }
+                }
                 htmla += `<td style="text-align: right;">${jml_stok}</td>`;
               }
               
@@ -408,6 +414,12 @@
                 for(var x=0; x < data.total.length; x++){
                     if(data.total[x].produk_id == data.produk[y].produk_id){
                         total += parseInt(data.total[x].produk_jml);
+                    }
+                }
+
+                for(var x=0; x < data.total_nc.length; x++){
+                    if(data.total_nc[x].produk_id == data.produk[y].produk_id){
+                        total += parseInt(data.total_nc[x].produk_jml);
                     }
                 }
                 
