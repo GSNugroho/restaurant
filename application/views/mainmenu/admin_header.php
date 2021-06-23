@@ -215,10 +215,18 @@
               </li>
             </ul>
           </li>
-          <li class="nav-header"><h6>LABA</h6></li>
+          <li class="nav-header"><h6>Pembukuan</h6></li>
           <li class="nav-item">
             <a href="<?php echo base_url('Bersih/laba');?>" class="nav-link">
               <i class="nav-icon fas fa-box"></i>
+              <p>
+                Laba Harian
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('Bersih/laba_resmi');?>" class="nav-link">
+              <i class="nav-icon fas fa-coins"></i>
               <p>
                 Laba
               </p>
@@ -281,14 +289,24 @@
               </p>
             </a>
           </li>
+          <li class="nav-header"><h6>Order & Stok</h6></li>
           <li class="nav-item">
             <a href="<?php echo base_url('Kasir/order')?>" class="nav-link">
-              <i class="nav-icon fas fa-shopping-cart"></i>
+              <i class="nav-icon fas fa-clipboard"></i>
               <p>
                 Order
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('Bersih/stok')?>" class="nav-link">
+              <i class="fas fa-layer-group nav-icon"></i>
+              <p>
+                Stok Tersedia
+              </p>
+            </a>
+          </li>
+          <li class="nav-header"><h6>Pembukuan</h6></li>
           <li class="nav-item">
             <a href="<?php echo base_url('Kasir/pengeluaran')?>" class="nav-link">
               <i class="nav-icon fas fa-money-bill-wave"></i>
@@ -297,6 +315,31 @@
               </p>
             </a>
           </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('Bersih/laba');?>" class="nav-link">
+              <i class="nav-icon fas fa-box"></i>
+              <p>
+                Laba Harian
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('Bersih/laba_resmi');?>" class="nav-link">
+              <i class="nav-icon fas fa-coins"></i>
+              <p>
+                Laba
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('Bersih/stok_terjual');?>" class="nav-link">
+              <i class="nav-icon fas fa-cubes"></i>
+              <p>
+                Laporan Stok
+              </p>
+            </a>
+          </li>
+          <li class="nav-header"><h6>PENGATURAN</h6></li>
           <li class="nav-item">
             <a href="<?php echo base_url('Welcome/logout');?>" class="nav-link">
               <i class="nav-icon fas fa-sign-out-alt text-danger"></i>

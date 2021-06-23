@@ -60,8 +60,68 @@
                         <label>CATATAN </label>
                         <textarea class="form-control" rows="5" style="width: 80%;" id="catatan" name="catatan"></textarea>
                     </div>
+                    <div class="form-group">
+                      <label>JENIS PENGELUARAN</label>
+                      <select class="form-control" name="jns_pengeluaran" id="jns_pengeluaran" style="width: 80%;">
+                        <option value="0">--Pilih--</option>
+                        <option value="1">Kebutuhan Dapur</option>
+                        <option value="2">Operasional Restoran</option>
+                      </select>
+                    </div>
                   </div>
-                  <div class="col-12">
+                  <div class="col-12" id="operasional_restorant" style="display: none;">
+                    <table class="table table-borderless">
+                      <thead>
+                        <tr>
+                          <th>Nama</th>
+                          <th>Jenis Saldo</th>
+                          <th>Jumlah Saldo</th>
+                          <th>Keterangan</th>
+                        </tr>
+                        <tr>
+                          <td>
+                              <div class="form-group">
+                                <select class="form-control" id="nm_biaya" name="nm_biaya[]">
+                                  <option value="">--- ---</option>
+                                  <?php
+                                    foreach($pos->result_array() as $row){
+                                      echo '<option value="'.$row['kd_pos'].'">'.$row['nm_pos'].'</option>';
+                                    }
+                                  ?>
+                                </select>
+                              </div>
+                          </td>
+                          <td>
+                              <div class="form-group">
+                                <select class="form-control" id="jns_saldo" name="jns_saldo[]">
+                                    <optoin value="">--- ---</optoin>
+                                    <option value="1">Uang Keluar</option>
+                                    <option value="2">Uang Masuk</option>
+                                </select>
+                              </div>
+                          </td>
+                          <td>
+                              <div class="form-group">
+                                <input class="form-control" type="text" id="jml_saldo" name="jml_saldo[]" placeholder="Rp 0">
+                              </div>
+                          </td>
+                          <td>
+                              <div class="form-group">
+                                <input class="form-control" type="text" id="ket_saldo" name="ket_saldo[]">
+                              </div>
+                          </td>
+                        </tr>
+                      </thead>
+                      <tbody id="biaya_lain">
+                      </tbody>
+                      <tfooter>
+                          <tr>
+                              <td><button type="button" class="btn btn-secondary" id="button_tambah_biaya">Tambah Biaya</button></td>
+                          </tr>
+                      </tfooter>
+                    </table>
+                  </div>
+                  <div class="col-12" id="kebutuhan_dapur" style="display: none;">
                     <table class="table table-borderless">
                         <thead>
                             <tr>
@@ -137,6 +197,23 @@
           format: 'DD-MM-YYYY',
           locale: 'id'
       });
+
+      $('#jns_pengeluaran').on('change', function(){
+        var x = $('#jns_pengeluaran option:selected').val();
+
+        if(x != 0){
+          if(x == 1){
+            $('#kebutuhan_dapur').show();
+            $('#operasional_restorant').hide();
+          }else{
+            $('#kebutuhan_dapur').hide();
+            $('#operasional_restorant').show();
+          }
+        }else{
+          $('#kebutuhan_dapur').hide();
+          $('#operasional_restorant').hide();
+        }
+      })
 
         $('#produk_nm').on('change', function(){
             var id = $('#produk_nm option:selected').val();
@@ -260,10 +337,65 @@
             })
         })
 
+        var raw = 1;
+        var wrapper = $('#biaya_lain');
+        $('#button_tambah_biaya').on('click', function(){
+            raw += 1;
+            $(wrapper).append(`
+                  <tr>
+                    <td>
+                        <div class="form-group">
+                          <select class="form-control" id="nm_biaya${raw}" name="nm_biaya[]">
+                          </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                          <select class="form-control" id="jns_saldo${raw}" name="jns_saldo[]">
+                              <optoin value="">--- ---</optoin>
+                              <option value="1">Uang Keluar</option>
+                              <option value="2">Uang Masuk</option>
+                          </select>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                          <input class="form-control" type="text" id="jml_saldo${raw}" name="jml_saldo[]" placeholder="Rp 0">
+                        </div>
+                    </td>
+                    <td>
+                        <div class="form-group">
+                          <input class="form-control" type="text" id="ket_saldo${raw}" name="ket_saldo[]">
+                        </div>
+                    </td>
+                    <td>
+                        <a href="#" class="remove_field" style="color: red;">
+                            <i class="nav-icon fas fa-trash text-danger"></i>
+                        </a>
+                    </td>
+                </tr>
+            `);
+
+            $.get("<?php echo base_url().'Kasir/get_semua_pos'?>", function(data){
+                var html = '<option value="">--- ---</option>';
+                var i;
+
+                for(i=0; i<data.pos.length; i++){
+                    html += `<option value='${data.pos[i].kd_pos}'>${data.pos[i].nm_pos}</option>`;
+                }
+
+                $('#nm_biaya'+raw).html(html);
+            }, 'json')
+
+            $(wrapper).on("click",".remove_field", function(e){
+              e.preventDefault(); $(this).closest('tr').remove(); raw--;
+            })
+        })
+
         $('#tgl_stok_in').datetimepicker({
-			locale: 'id',
-			format: 'DD-MM-YYYY HH:mm'
-		})
+          locale: 'id',
+          format: 'DD-MM-YYYY HH:mm'
+        })
 
       $('#kategori').select2({
         placeholder: "Select a state",

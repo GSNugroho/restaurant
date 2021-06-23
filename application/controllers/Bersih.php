@@ -9,7 +9,8 @@ class Bersih extends CI_Controller {
             $this->load->model('M_kategori');
             $this->load->model('M_produk');
         }else{
-			echo redirect('Welcome');
+            $this->session->set_flashdata('error', 'Maaf, Anda Hapus Login Dahulu');
+			redirect('Welcome');
 		}
     }
 
@@ -47,6 +48,10 @@ class Bersih extends CI_Controller {
 
     public function laba(){
         $this->load->view('bersih/laba');
+    }
+
+    public function laba_resmi(){
+        $this->load->view('bersih/laba_resmi');
     }
 
     public function stok_terjual(){
@@ -469,6 +474,8 @@ class Bersih extends CI_Controller {
 		$this->M_bersih->insert_batch_stok_out_bersih($produk_data);
 		
 		$this->M_bersih->insert_data_stok_out($data);
+
+        print_r($produk_data);
 		
 		redirect('Bersih/stok_out');
 	}

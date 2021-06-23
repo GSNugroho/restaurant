@@ -8,7 +8,8 @@ class Kategori extends CI_Controller{
         if((!empty($_SESSION['masuk']) && !empty($_SESSION['akses']))){
             $this->load->model('M_kategori');
         }else{
-			echo redirect('Welcome');
+            $this->session->set_flashdata('error', 'Maaf, Anda Hapus Login Dahulu');
+			redirect('Welcome');
 		}
     }
 

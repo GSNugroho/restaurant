@@ -10,12 +10,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Pengeluaran</h1>
+            <h1 class="m-0">Buku Besar</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
-              <li class="breadcrumb-item active">Pengeluaran</li>
+              <li class="breadcrumb-item active">Buku Besar</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -28,109 +28,65 @@
           <div class="col-12">
             <div class="row">
                 <div class="col-2">
-                    <a class="btn btn-block btn-secondary" href="<?php echo base_url().'Kasir/tambah_pengeluaran'?>">Tambah Pengeluaran</a>
-                    <!-- <button type="button" class="btn btn-block btn-secondary" data-toggle="modal" data-target="#modal-default">
-                  .......
-                </button> -->
                 </div>
             </div>
             <br>
             <div class="card card-secondary card-tabs">
               <div class="card-header p-0 pt-1">
                   <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
+                    <?php
+                        $i = 0;
+                        foreach($pos as $row):
+                        $i++;
+                    ?>
                       <li class="nav-item">
-                          <a class="nav-link active" id="stok-in" data-toggle="pill" href="#custom-stok-in" role="tab" aria-controls="custom-stok-in" aria-selected="true">Pengeluaran</a>
+                          <a class="nav-link" id="biaya<?= $i?>" data-toggle="pill" href="#custom-biaya-<?= $i?>" role="tab" aria-controls="custom-biaya-<?= $i?>" aria-selected="false"><?= $row['nm_pos']?></a>
                       </li>
-                      <li class="nav-item">
-                          <a class="nav-link" id="biaya" data-toggle="pill" href="#custom-biaya" role="tab" aria-controls="custom-biaya" aria-selected="false">Biaya</a>
-                      </li>
+                    <?php endforeach?>
                   </ul>
               </div>
               <div class="card-body">
                 <div class="tab-content" id="custom-tabs-one-tabContent">
-                  <div class="tab-pane fade show active" id="custom-stok-in" role="tabpanel" aria-labelledby="custom-stok-in">
-                    <div class="card-body table-responsive p-0">
-                      <table id="tbl_stok_in" class="table table-borderless table-striped">
-                          <thead>
-                          <tr>
-                              <th class="text-left">WAKTU SUBMIT</th>
-                              <th class="text-left" style="display: none;">ID STOK MASUK</th>
-                              <th class="text-left">CATATAN</th>
-                              <th class="text-left">TANGGAL</th>
-                              <th></th>
-                          </tr>
-                          </thead>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="tab-pane" id="custom-biaya" role="tabpanel" aria-labelledby="custom-biaya">
-                    <div class="card-body table-responsive p-0">
-                      <center><h4>Buku Besar Biaya</h4></center>
-                      <form action="<?php echo base_url('Transaksi/buku_besar_biaya')?>" method="post">
-                        <center>
-                            <table>
-                                <thead>
-                                    <tr>
-                                        <th style="text-align: center;">Bulan</th>
-                                        <th></th>
-                                        <th style="text-align: center;">Tahun</th>
-                                        <th></th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <select class="form-control" name="bulan" id="bulan">
-                                                <option value="">Pilih</option>
-                                                <option value="1">Januari</option>
-                                                <option value="2">Februari</option>
-                                                <option value="3">Maret</option>
-                                                <option value="4">April</option>
-                                                <option value="5">Mei</option>
-                                                <option value="6">Juni</option>
-                                                <option value="7">Juli</option>
-                                                <option value="8">Agustus</option>
-                                                <option value="9">September</option>
-                                                <option value="10">Oktober</option>
-                                                <option value="11">November</option>
-                                                <option value="12">Desember</option>
-                                            </select>
-                                        </td>
-                                        <td>&nbsp;</td>
-                                        <td>
-                                            <select class="form-control" name="tahun" id="tahun">
-                                            </select>
-                                        </td>
-                                        <td>&nbsp;</td>
-                                        <td>
-                                            <button class="btn btn-success" type="submit" id="button_hitung_laba">Lihat Biaya</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </center>
-                            <script>
-                                $('#tahun').each(function() {
+                        <?php 
+                            $a = 0;
+                            $debit = 0;
+                            $kredit = 0;
+                            foreach($pos as $row):
+                                $a++;
+                                $s=0;
+                        ?>
+                        <div class="tab-pane" id="custom-biaya-<?= $a?>" role="tabpanel" aria-labelledby="custom-biaya-<?= $a?>">
+                            <div class="card-body table-responsive p-0">
+                                <table class="table table-borderless table-striped">
+                                    <thead>
+                                        <tr>
+                                            <th>Tanggal</th>
+                                            <th>Keterangan</th>
+                                            <th>Saldo</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    <?php
+                                        $totalsaldo = 0;
 
-                                var year = (new Date()).getFullYear();
-                                var current = year;
-                                year -= 3;
-                                for (var i = 0; i < 6; i++) {
-                                if ((year+i) == current)
-                                    $(this).append('<option selected value="' + (year + i) + '">' + (year + i) + '</option>');
-                                else
-                                    $(this).append('<option value="' + (year + i) + '">' + (year + i) + '</option>');
-                                }
-
-                                })
-                            </script>
-                        </form>
-                    </div>
-                  </div>
+                                        foreach($biaya as $data){
+                                            if($row['kd_pos'] == $data['kd_pos']){
+                                                ?>
+                                                <td><?= $data['tgl_input']?></td>
+                                                <td><?= $data['keterangan']?></td>
+                                                <td><?= $data['saldo']?></td>
+                                                <?php
+                                            }
+                                        }
+                                    ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <?php endforeach?>
                 </div>
                     
-                    </div>
+                </div>
                 </div>
               <!-- /.card -->
             </div>

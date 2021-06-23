@@ -586,4 +586,51 @@
 
         })
       </script>
+
+      <div class="modal fade" id="modal-hapus">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">DISABLED PRODUK : </h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div>
+                Apakah anda yakin untuk disable produk ini ?
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+            <input type="hidden" name="produk_id_hapus" id="produk_id_hapus">
+            <button class="btn btn-danger" id="submit_hapus" name="submit_hapus">Disabled</button>
+            
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <script>
+        $('#modal-hapus').on('show.bs.modal', function(event) {
+          var button = $(event.relatedTarget)
+          var recipient = button.data('whatever')
+          var modal = $(this);
+          var dataString = 'id=' + recipient
+          
+          $('#produk_id_hapus').val(recipient);
+        });
+
+        $('#submit_hapus').on('click', function(){
+          var id = $('#produk_id_hapus').val();
+
+          var dataString = 'id='+id;
+
+          $.post("<?php echo base_url('Produk/hapus_detail_produk')?>", dataString, function(data){
+            $('#modal-hapus').modal('hide');
+            $('#tbl_produk').DataTable().ajax.reload();
+          });
+
+        })
+      </script>
 <?php $this->load->view('mainmenu/admin_footer'); ?>

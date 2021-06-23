@@ -91,9 +91,9 @@ class Welcome extends CI_Controller {
 	}
 
 	function gagallogin(){
-		$url=base_url('Welcome');
-		echo $this->session->set_flashdata('msg','Username Atau Password Salah');
-		redirect($url);
+		// $url=base_url('Welcome');
+		$this->session->set_flashdata('error','Username Atau Password Salah');
+		redirect($this->redirect);
 	}
 	
 	function logout(){

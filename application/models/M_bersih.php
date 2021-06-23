@@ -16,6 +16,10 @@ class M_bersih extends CI_Model{
         $this->db->insert_batch('tbl_order_detail', $data);
     }
 
+    function insert_batch_biaya($data){
+        $this->db->insert_batch('tbl_transaksi', $data);
+    }
+
     function insert_stok_in($data){
         $this->db->insert('tbl_stok_in_bersih', $data);
     }
@@ -788,6 +792,18 @@ class M_bersih extends CI_Model{
         return $query;
     }
 
+    function get_semua_pos(){
+        $sql = "SELECT * FROM tbl_pos WHERE dt_aktif = 1";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_semua_pos_js(){
+        $sql = "SELECT * FROM tbl_pos WHERE dt_aktif = 1";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     function get_semua_stok_kotor_js(){
         $sql = "SELECT * FROM tbl_produk WHERE tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1";
         $query = $this->db->query($sql);
@@ -796,6 +812,12 @@ class M_bersih extends CI_Model{
 
     function get_kode_stok_in_bersih(){
         $sql = "SELECT MAX(stok_in_id) AS maxkode FROM tbl_stok_in_bersih";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_kode_transaksi(){
+        $sql = "SELECT MAX(kd_transaksi) AS maxkode FROM tbl_transaksi";
         $query = $this->db->query($sql);
         return $query;
     }

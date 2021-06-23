@@ -9,7 +9,8 @@ class Produk extends CI_Controller{
 			$this->load->model('M_produk');
 			$this->load->model('M_kategori');
 		}else{
-			echo redirect('Welcome');
+			$this->session->set_flashdata('error', 'Maaf, Anda Hapus Login Dahulu');
+			redirect('Welcome');
 		}
     }
 
@@ -95,7 +96,11 @@ class Produk extends CI_Controller{
 					</button>
 					<button style="width: 60px;" value="'.$row['produk_id'].'" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-edit" data-whatever="'.$row['produk_id'].'" data-keyboard="false" data-backdrop="static">
 					<i class="fas fa-edit"></i>
-					</button>';
+					</button>
+					<button style="width: 60px;" value="'.$row['produk_id'].'" type="button" class="btn btn-secondary" data-toggle="modal" data-target="#modal-hapus" data-whatever="'.$row['produk_id'].'" data-keyboard="false" data-backdrop="static">
+					<i class="fas fa-trash"></i>
+					</button>
+					'; 
 
             $data[] = array( 
                 "produk_id"=>$row['produk_id'],
@@ -506,6 +511,16 @@ class Produk extends CI_Controller{
 			'produk_kategori' => $this->input->post('produk_kategori', TRUE),
 			'produk_harga' => $this->input->post('produk_harga', TRUE),
 			'produk_satuan' => $this->input->post('produk_satuan', TRUE)
+		);
+
+		$this->M_produk->update_detail_produk($id, $data);
+	}
+
+	function hapus_detail_produk(){
+		$id = $this->input->post('id', TRUE);
+
+		$data = array(
+			'produk_aktif' => 0
 		);
 
 		$this->M_produk->update_detail_produk($id, $data);

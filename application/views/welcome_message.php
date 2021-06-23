@@ -19,6 +19,15 @@
 	<!-- /.login-logo -->
 	<div class="card card-outline card-secondary">
 		<div class="card-body">
+		<?php
+			if($this->session->flashdata('error')){ ?>
+				<div class="alert alert-danger alert-dismissible">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+					<?= $this->session->flashdata('error');?>
+				</div>
+		<?php
+			}
+		?>
 		<p class="login-box-msg">Sign in to start your session</p>
 
 		<form action="<?php echo base_url().'Welcome/cek_user'?>" method="post">

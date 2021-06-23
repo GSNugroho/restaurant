@@ -10,7 +10,8 @@ class Kasir extends CI_Controller {
             $this->load->model('M_produk');
             $this->load->model('M_kasir');
         }else{
-			echo redirect('Welcome');
+            $this->session->set_flashdata('error', 'Maaf, Anda Hapus Login Dahulu');
+			redirect('Welcome');
 		}
     }
 
@@ -32,7 +33,8 @@ class Kasir extends CI_Controller {
 
     public function tambah_pengeluaran(){
         $data = array(
-            'produk' => $this->M_bersih->get_semua_stok_kotor()
+            'produk' => $this->M_bersih->get_semua_stok_kotor(),
+            'pos' => $this->M_bersih->get_semua_pos(),
         );
         $this->load->view('kasir/kasir_tambah_pengeluaran', $data);
     }
@@ -114,37 +116,79 @@ class Kasir extends CI_Controller {
     }
 
     function tambah_pengeluaran_baru(){
-        $data = array(
-            'stok_in_id' => $this->get_kode_stok_in_bersih(),
-            'stok_in_dt_masuk' => date('Y-m-d', strtotime($this->input->post('tgl_stok_in', true))),
-            'stok_in_dt_create' => date('Y-m-d H:i:s'),
-            'stok_in_user_create' => $this->session->userdata('nama'),
-            'stok_in_aktif' => 1
-        );
+        if($this->input->post('jns_pengeluaran', TRUE) == 1){
+            $data = array(
+                'stok_in_id' => $this->get_kode_stok_in_bersih(),
+                'stok_in_dt_masuk' => date('Y-m-d', strtotime($this->input->post('tgl_stok_in', true))),
+                'stok_in_dt_create' => date('Y-m-d H:i:s'),
+                'stok_in_user_create' => $this->session->userdata('nama'),
+                'stok_in_aktif' => 1
+            );
+    
+            $produk_nm = $this->input->post('produk_nm', true);
+            $produk_jml = $this->input->post('produk_jml', true);
+            $produk_harga = $this->input->post('produk_harga', true);
+    
+            $produk_data = array();
+    
+            $index = 0;
+            foreach($produk_nm as $data_nm){
+                array_push($produk_data, array(
+                    'stok_in_detail_id' => $this->get_kode_stok_in_bersih(),
+                    'stok_in_detail_produk_id' => $data_nm,
+                    'stok_in_detail_jumlah' => $produk_jml[$index],
+                    'stok_in_detail_harga' => $produk_harga[$index]
+                ));
+    
+                $index++;
+            }
+    
+            $this->M_bersih->insert_batch_produk_stok_in($produk_data);
+    
+            $this->M_bersih->insert_stok_in($data);
+        }else if($this->input->post('jns_pengeluaran', TRUE) == 2){
+            $nm_biaya = $this->input->post('nm_biaya', TRUE);
+            $jns_saldo = $this->input->post('jns_saldo', TRUE);
+            $jml_saldo = $this->input->post('jml_saldo', TRUE);
+            $ket_saldo = $this->input->post('ket_saldo', TRUE);
 
-        $produk_nm = $this->input->post('produk_nm', true);
-        $produk_jml = $this->input->post('produk_jml', true);
-        $produk_harga = $this->input->post('produk_harga', true);
+            $biaya = array();
 
-        $produk_data = array();
+            $idx = 0;
+            foreach($nm_biaya as $data_nm){
+                array_push($biaya, array(
+                    'kd_transaksi' => $this->get_kode_transaksi($idx),
+                    'kd_pos' => $data_nm,
+                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'user_input' => $this->session->userdata('nama'),
+                    'tgl_transaksi' => $this->input->post('tgl_stok_in', TRUE),
+                    'jns_saldo' => $jns_saldo[$idx],
+                    'saldo' => $jml_saldo[$idx],
+                    'keterangan' => $ket_saldo[$idx],
+                    'dt_aktif' => 1
+                ));
 
-        $index = 0;
-        foreach($produk_nm as $data_nm){
-            array_push($produk_data, array(
-                'stok_in_detail_id' => $this->get_kode_stok_in_bersih(),
-                'stok_in_detail_produk_id' => $data_nm,
-                'stok_in_detail_jumlah' => $produk_jml[$index],
-                'stok_in_detail_harga' => $produk_harga[$index]
-            ));
+                $idx++;
+            }
 
-            $index++;
+            $this->M_bersih->insert_batch_biaya($biaya);
         }
 
-        $this->M_bersih->insert_batch_produk_stok_in($produk_data);
+        redirect('Kasir/pengeluaran');
+    }
 
-        $this->M_bersih->insert_stok_in($data);
+    function get_kode_transaksi($idx){
+        $kode = $this->M_bersih->get_kode_transaksi();
+        foreach($kode->result_array() as $row){
+            $data = $row['maxkode'];
+        }
 
-        redirect('Bersih/stok_in');
+        $kodeinv = $data;
+        $noUrut = (int) substr($kodeinv, 3, 6);
+        $noUrut = $noUrut+1+$idx;
+        $char = "TR-";
+        $kodebaru = $char.sprintf("%06s", $noUrut);
+        return $kodebaru;
     }
 
     function get_kode_stok_in_bersih(){
@@ -160,5 +204,13 @@ class Kasir extends CI_Controller {
         $kodebaru = $char.sprintf("%06s", $noUrut);
         return $kodebaru;
 	}
+
+    function get_semua_pos(){
+        $data = array(
+            'pos' => $this->M_bersih->get_semua_pos_js()
+        );
+
+        echo json_encode($data);
+    }
 }
 ?>
