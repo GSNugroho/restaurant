@@ -19,13 +19,13 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tambah Pengeluaran</h1>
+            <h1 class="m-0">Tambah Pengeluaran/ Pemasukan</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item"><a href="#">Pengeluaran</a></li>
-              <li class="breadcrumb-item active">Tambah Pengeluaran</li>
+              <li class="breadcrumb-item active">Tambah Pengeluaran/ Pemasukan</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -58,7 +58,7 @@
                     </div>
                     <div class="form-group">
                         <label>CATATAN </label>
-                        <textarea class="form-control" rows="5" style="width: 80%;" id="catatan" name="catatan"></textarea>
+                        <textarea class="form-control" rows="5" style="width: 80%;" id="catatan" name="catatan" placeholder="( Optional )"></textarea>
                     </div>
                     <div class="form-group">
                       <label>JENIS PENGELUARAN</label>

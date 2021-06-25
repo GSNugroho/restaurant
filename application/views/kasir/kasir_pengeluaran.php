@@ -10,7 +10,7 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Pengeluaran</h1>
+            <h1 class="m-0">Keuangan</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -28,7 +28,7 @@
           <div class="col-12">
             <div class="row">
                 <div class="col-2">
-                    <a class="btn btn-block btn-secondary" href="<?php echo base_url().'Kasir/tambah_pengeluaran'?>">Tambah Pengeluaran</a>
+                    <a class="btn btn-block btn-secondary" href="<?php echo base_url().'Kasir/tambah_pengeluaran'?>">Tambah Data</a>
                     <!-- <button type="button" class="btn btn-block btn-secondary" data-toggle="modal" data-target="#modal-default">
                   .......
                 </button> -->
@@ -42,7 +42,10 @@
                           <a class="nav-link active" id="stok-in" data-toggle="pill" href="#custom-stok-in" role="tab" aria-controls="custom-stok-in" aria-selected="true">Pengeluaran</a>
                       </li>
                       <li class="nav-item">
-                          <a class="nav-link" id="biaya" data-toggle="pill" href="#custom-biaya" role="tab" aria-controls="custom-biaya" aria-selected="false">Biaya</a>
+                          <a class="nav-link" id="transaksi" data-toggle="pill" href="#custom-transaksi" role="tab" aria-controls="custom-transaksi" aria-selected="false">Transaksi</a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link" id="biaya" data-toggle="pill" href="#custom-biaya" role="tab" aria-controls="custom-biaya" aria-selected="false">Buku Besar</a>
                       </li>
                   </ul>
               </div>
@@ -63,9 +66,43 @@
                       </table>
                     </div>
                   </div>
+                  <div class="tab-pane" id="custom-transaksi" role="tabpanel" aria-labelledby="custom-transaksi">
+                    <center center><h4>Transaksi</h4></center>
+                    <div>
+                      <table>
+                        <tr>
+                          <td>
+                            <div class="form-group">
+                              <label>Jenis Saldo</label>
+                              <select class="form-control" name="jns_saldo" id="jns_saldo">
+                                <option value="">--- ---</option>
+                                <option value="1">Uang Keluar</option>
+                                <option value="2">Uang Masuk</option>
+                              </select>
+                            </div>
+                          </td>
+                        </tr>
+                      </table>
+                    </div>
+                    <div class="card-body table-responsive p-0">
+                      <table id="tbl_transaksi" class="table table-borderless table-striped" style="width:100%;">
+                        <thead>
+                          <tr>
+                            <th class="text-center" style="display: none;">kd_transaksi</th>
+                            <th class="text-left">Tanggal</th>
+                            <th class="text-left">Pos</th>
+                            <th class="text-left">Keterangan</th>
+                            <th class="text-left">Jenis</th>
+                            <th class="text-right">Saldo</th>
+                            <th></th>
+                          </tr>
+                        </thead>
+                      </table>
+                    </div>
+                  </div>
                   <div class="tab-pane" id="custom-biaya" role="tabpanel" aria-labelledby="custom-biaya">
                     <div class="card-body table-responsive p-0">
-                      <center><h4>Buku Besar Biaya</h4></center>
+                      <center><h4>Buku Besar</h4></center>
                       <form action="<?php echo base_url('Transaksi/buku_besar_biaya')?>" method="post">
                         <center>
                             <table>
@@ -199,6 +236,76 @@
               }
           ]
       });
+
+      var table2 = $('#tbl_transaksi').DataTable({
+          language: {
+              "sEmptyTable": "Tidak ada data yang tersedia pada tabel ini",
+              "sProcessing": "Sedang memproses...",
+              "sLengthMenu": "Tampilkan Data _MENU_",
+              "sZeroRecords": "Tidak ditemukan data yang sesuai",
+              "sInfo": "Total _TOTAL_ entri",
+              "sInfoEmpty": "Total 0 entri",
+              "sInfoFiltered": "",
+              "sInfoPostFix": "",
+              "sSearch": "Cari:",
+              "sUrl": "",
+              "oPaginate": {
+                  "sFirst": "Pertama",
+                  "sPrevious": "Sebelumnya",
+                  "sNext": "Selanjutnya",
+                  "sLast": "Terakhir"
+              }
+          },
+          'order': [
+              [1, "asc"]
+          ],
+          "columnDefs": [
+            {
+                "targets": [ 0 ],
+                "visible": false
+            }
+          ],
+          'processing': true,
+          "responsive": true,
+          'serverSide': true,
+          "searching": false,
+          'serverMethod': 'post',
+          'ajax': {
+              'url': '<?php echo base_url().'Transaksi/tbl_transaksi'?>',
+              'data': function(data){
+                var jns_saldo = $('#jns_saldo option:selected').val();
+
+                data.jns_saldo = jns_saldo;
+              }
+          },
+          'columns': [
+              {
+                  data: 'kd_transaksi'
+              },
+              {
+                  data: 'tgl_input'
+              },
+              {
+                  data: 'nm_pos'
+              },
+              {
+                  data: 'keterangan'
+              },
+              {
+                  data: 'jns_saldo'
+              },
+              {
+                  data: 'saldo', className: 'text-right'
+              },
+              {
+                  data: 'cek'
+              }
+          ]
+      });
+
+      $('#jns_saldo').on('change', function(){
+        $('#tbl_transaksi').DataTable().ajax.reload();
+      });
     });
     </script>
 
@@ -291,6 +398,135 @@
               $('#total_semua_stok_in').html(uang(total_semua));
           }, 'json');
         });
+      </script>
+
+
+      <div class="modal fade" id="modal-transaksi">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">TRANSAKSI : </h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <table class="table table-responsive table-borderless">
+                <tr>
+                  <td>Tanggal</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td id="tanggal_input"></td>
+                </tr>
+                <tr>
+                  <td>Pos</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td id="pos_nama"></td>
+                </tr>
+                <tr>
+                  <td>Jenis Saldo</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td id="saldo_jenis"></td>
+                </tr>
+                <tr>
+                  <td>Saldo</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td id="saldo"></td>
+                </tr>
+                <tr>
+                  <td>Keterangan</td>
+                  <td>&nbsp;:&nbsp;</td>
+                  <td id="keterangan"></td>
+                </tr>
+              </table>
+            </div>
+            <div class="modal-footer justify-content-between">
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <script>
+        function uang(uang){
+            var reverse = uang.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan
+        }
+
+        $('#modal-transaksi').on('show.bs.modal', function(event) {
+          var button = $(event.relatedTarget)
+          var recipient = button.data('whatever')
+          var modal = $(this);
+          var dataString = 'id=' + recipient
+          $.get('<?php echo base_url('Transaksi/get_detail_transaksi')?>', dataString, function(data){
+              var jns_saldo = '';
+              $('#tanggal_input').html(data.detail[0].tgl_input);
+              $('#pos_nama').html(data.detail[0].nm_pos);
+
+              if(data.detail[0].jns_saldo == 1){
+                jns_saldo = 'Uang Keluar';
+              }else{
+                jns_saldo = 'Uang Masuk';
+              }
+              $('#saldo_jenis').html(jns_saldo);
+              $('#saldo').html(uang(data.detail[0].saldo));
+              $('#keterangan').html(data.detail[0].keterangan);
+
+          }, 'json');
+        });
+      </script>
+
+      <div class="modal fade" id="modal-transaksi-hapus">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h4 class="modal-title">TRANSAKSI HAPUS: </h4>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div>
+                Apakah anda yakin untuk menghapus transaksi ini ?
+              </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+              <input type="hidden" name="transaksi_kd_hapus" id="transaksi_kd_hapus">
+              <button class="btn btn-danger" id="submit_hapus_transaksi" name="submit_hapus_transaksi">Hapus</button>
+            </div>
+          </div>
+          <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+      </div>
+      <script>
+        function uang(uang){
+            var reverse = uang.toString().split('').reverse().join(''),
+            ribuan = reverse.match(/\d{1,3}/g);
+            ribuan = ribuan.join('.').split('').reverse().join('');
+            return ribuan
+        }
+
+        $('#modal-transaksi-hapus').on('show.bs.modal', function(event) {
+          var button = $(event.relatedTarget)
+          var recipient = button.data('whatever')
+          var modal = $(this);
+          var dataString = 'id=' + recipient
+
+          $('#transaksi_kd_hapus').val(recipient);
+        });
+
+        $('#submit_hapus_transaksi').on('click', function(){
+          var id = $('#transaksi_kd_hapus').val();
+
+          var dataString = 'id='+id;
+
+          $.post("<?php echo base_url('Transaksi/hapus_transaksi')?>", dataString, function(data){
+            $('#modal-transaksi-hapus').modal('hide');
+            $('#tbl_transaksi').DataTable().ajax.reload();
+          });
+        })
       </script>
   <?php $this->load->view('mainmenu/admin_footer'); ?>
   </div>

@@ -543,6 +543,18 @@ class M_bersih extends CI_Model{
         return $query->result_array();
     }
 
+    function get_modal(){
+        $sql = "SELECT
+            SUM(CAST(tbl_transaksi.saldo AS FLOAT)) AS saldo 
+        FROM
+            tbl_transaksi 
+        WHERE
+            kd_pos = '111'
+        ";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     function get_total_stok_jual_nc(){
         $sql = "SELECT
             tbl_stok_out_bersih_detail.stok_out_detail_produk_id AS produk_id,

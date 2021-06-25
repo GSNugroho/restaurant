@@ -145,8 +145,8 @@
             var uang_hpp = 0;
             var pembelian_bb = 0;
             var sisa_aset = 0;
-            var kas_awal = 10000000;
-            var modal_awal = 10000000;
+            var kas_awal = data.modal[0].saldo;
+            var modal_awal = data.modal[0].saldo;
             var stok_awal = 0;
 
             var modal = $('#modal').val();

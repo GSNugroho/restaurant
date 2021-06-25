@@ -27,6 +27,10 @@ class Kasir extends CI_Controller {
         $this->load->view('kasir/kasir_order');
     }
 
+    public function pos(){
+        $this->load->view('kasir/kasir_pos');
+    }
+
     public function pengeluaran(){
         $this->load->view('kasir/kasir_pengeluaran');
     }
@@ -37,6 +41,10 @@ class Kasir extends CI_Controller {
             'pos' => $this->M_bersih->get_semua_pos(),
         );
         $this->load->view('kasir/kasir_tambah_pengeluaran', $data);
+    }
+
+    public function tambah_pos(){
+        $this->load->view('kasir/kasir_tambah_pos');
     }
 
     function tbl_order(){
@@ -105,6 +113,69 @@ class Kasir extends CI_Controller {
 		echo json_encode($response);
     }
 
+    function tbl_pos(){
+        ## Read value
+		$draw = $_POST['draw'];
+		$baris = $_POST['start'];
+		$rowperpage = $_POST['length']; // Rows display per page
+		$columnIndex = $_POST['order'][0]['column']; // Column index
+		$columnName = $_POST['columns'][$columnIndex]['data']; // Column name
+		$columnSortOrder = $_POST['order'][0]['dir']; // asc or desc
+		$searchValue = $_POST['search']['value']; // Search value
+
+		## Search 
+        $searchQuery = '';
+		if($searchValue != ''){
+		$searchQuery .= " and (
+		nm_mitra like '%".$searchValue."%' or  
+		ats_nm_rekening like '%".$searchValue."%' ) ";
+		}
+
+		## Total number of records without filtering
+		$records = $this->M_kasir->get_all_pos();
+		foreach($records->result_array() as $row){
+			$totalRecords = $row['allcount'];
+		}
+		
+
+		## Total number of record with filtering
+		$records = $this->M_kasir->get_all_pos_search($searchQuery);
+		foreach($records->result_array() as $row){
+			$totalRecordwithFilter = $row['allcount'];
+		}
+		
+
+		## Fetch records
+        $empQuery = $this->M_kasir->get_fetch_pos($searchQuery, $columnName, $columnSortOrder, $baris, $rowperpage);
+	    $data = array();
+
+	    foreach($empQuery->result_array() as $row){
+            $cek = '<button value="'.$row['kd_pos'].'" type="button" class="btn btn-block btn-secondary" data-toggle="modal" data-target="#modal-default" data-whatever="'.$row['kd_pos'].'">
+                Detail
+                </button>
+                <button value="'.$row['kd_pos'].'" type="button" class="btn btn-block btn-secondary" data-toggle="modal" data-target="#modal-hapus" data-whatever="'.$row['kd_pos'].'">
+                Hapus
+                </button>
+                ';
+
+            $data[] = array( 
+                "kd_pos"=>$row['kd_pos'],
+                "nm_pos"=>$row['nm_pos'],
+                "cek"=>$cek
+            );
+		}
+
+		## Response
+		$response = array(
+		"draw" => intval($draw),
+		"iTotalRecords" => $totalRecords,
+		"iTotalDisplayRecords" => $totalRecordwithFilter,
+		"aaData" => $data
+		);
+
+		echo json_encode($response);
+    }
+
     function get_order_masuk_data(){
         $id = $this->input->get('id', true);
         $data = array(
@@ -159,9 +230,9 @@ class Kasir extends CI_Controller {
                 array_push($biaya, array(
                     'kd_transaksi' => $this->get_kode_transaksi($idx),
                     'kd_pos' => $data_nm,
-                    'tgl_input' => date('Y-m-d H:i:s'),
+                    'tgl_input' => date('Y-m-d', strtotime($this->input->post('tgl_stok_in', true))),
                     'user_input' => $this->session->userdata('nama'),
-                    'tgl_transaksi' => $this->input->post('tgl_stok_in', TRUE),
+                    'tgl_transaksi' => date('Y-m-d H:i:s'),
                     'jns_saldo' => $jns_saldo[$idx],
                     'saldo' => $jml_saldo[$idx],
                     'keterangan' => $ket_saldo[$idx],
@@ -175,6 +246,30 @@ class Kasir extends CI_Controller {
         }
 
         redirect('Kasir/pengeluaran');
+    }
+
+    function tambah_pos_baru(){
+        $data = array(
+            'kd_pos' => $this->input->post('kd_pos', TRUE),
+            'nm_pos' => $this->input->post('nm_pos', TRUE),
+            'keterangan' => $this->input->post('ket_pos', TRUE),
+            'dt_create' => date('Y-m-d H:i:s'),
+            'dt_aktif' => 1
+        );
+
+        $this->M_kasir->insert_pos($data);
+
+        redirect('Kasir/pos');
+    }
+
+    function hapus_pos(){
+        $id = $this->input->post('id, TRUE');
+        
+        $data = array(
+            'dt_aktif' => 0
+        );
+
+        $this->M_kasir->update_detail_pos($id, $data);
     }
 
     function get_kode_transaksi($idx){
@@ -208,6 +303,16 @@ class Kasir extends CI_Controller {
     function get_semua_pos(){
         $data = array(
             'pos' => $this->M_bersih->get_semua_pos_js()
+        );
+
+        echo json_encode($data);
+    }
+
+    function get_detail_pos(){
+        $id = $this->input->get('id', TRUE);
+
+        $data = array(
+            'detail' => $this->M_kasir->get_detail_pos($id)
         );
 
         echo json_encode($data);

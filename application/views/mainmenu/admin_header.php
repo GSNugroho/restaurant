@@ -311,7 +311,15 @@
             <a href="<?php echo base_url('Kasir/pengeluaran')?>" class="nav-link">
               <i class="nav-icon fas fa-money-bill-wave"></i>
               <p>
-                Pengeluaran
+                Keuangan
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('Kasir/pos')?>" class="nav-link">
+              <i class="nav-icon fas fa-book"></i>
+              <p>
+                Pos
               </p>
             </a>
           </li>

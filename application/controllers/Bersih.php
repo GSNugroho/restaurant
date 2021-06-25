@@ -685,6 +685,7 @@ class Bersih extends CI_Controller {
 
     function get_all_laba(){
         $data = array(
+            'modal' => $this->M_bersih->get_modal(),
             'uang_masuk' => $this->M_bersih->itung_uang_masuk(),
             'uang_hpp' => $this->M_bersih->itung_uang_hpp(),
             'pengeluaran' => $this->M_bersih->itung_uang_pengeluaran(),

@@ -13,6 +13,15 @@ class M_kasir extends CI_Model{
         return $query;
     }
 
+    function insert_pos($data){
+        $this->db->insert('tbl_pos', $data);
+    }
+
+    function update_detail_pos($id, $data){
+        $this->db->where('kd_pos', $id);
+        $this->db->update('tbl_pos', $data);
+    }
+
     function get_fetch_order($searchQuery, $columnName, $columnSortOrder, $baris, $rowperpage){
         $sql = "SELECT 
         tbl_order.order_id as order_id,
@@ -48,6 +57,43 @@ class M_kasir extends CI_Model{
         WHERE
             tbl_order.order_id = '$id' AND tbl_order.order_aktif = 1";
         
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function get_all_pos(){
+        $sql = "SELECT count(*) as allcount FROM tbl_pos";
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_all_pos_search($searchQuery){
+        $sql = "SELECT count(*) as allcount FROM tbl_pos WHERE 1=1 ".$searchQuery;
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_fetch_pos($searchQuery, $columnName, $columnSortOrder, $baris, $rowperpage){
+        $sql = "SELECT 
+        tbl_pos.kd_pos as kd_pos,
+        tbl_pos.nm_pos as nm_pos,
+        tbl_pos.keterangan as keterangan,
+        tbl_pos.dt_aktif as dt_aktif
+        FROM tbl_pos
+        WHERE 1=1 ".$searchQuery." ORDER BY ".$columnName." "
+        .$columnSortOrder." LIMIT ".$baris.", ".$rowperpage;
+        $query = $this->db->query($sql);
+        return $query;
+    }
+
+    function get_detail_pos($id){
+        $sql = "SELECT 
+        tbl_pos.kd_pos as kd_pos,
+        tbl_pos.nm_pos as nm_pos,
+        tbl_pos.keterangan as keterangan,
+        tbl_pos.dt_aktif as dt_aktif
+        FROM tbl_pos
+        WHERE tbl_pos.kd_pos = '$id' ";
         $query = $this->db->query($sql);
         return $query->result_array();
     }

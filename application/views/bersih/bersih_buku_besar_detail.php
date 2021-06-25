@@ -72,9 +72,11 @@
                                         foreach($biaya as $data){
                                             if($row['kd_pos'] == $data['kd_pos']){
                                                 ?>
-                                                <td><?= $data['tgl_input']?></td>
-                                                <td><?= $data['keterangan']?></td>
-                                                <td><?= $data['saldo']?></td>
+                                                <tr>
+                                                  <td><?= $data['tgl_input']?></td>
+                                                  <td><?= $data['keterangan']?></td>
+                                                  <td><?= 'Rp '.number_format($data['saldo'], 0, ',', '.')?></td>
+                                                </tr>
                                                 <?php
                                             }
                                         }
