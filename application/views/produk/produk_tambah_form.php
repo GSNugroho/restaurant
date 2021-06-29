@@ -120,6 +120,13 @@
                               <textarea class="form-control" rows="5" style="width: 80%;" id="deskripsi" name="diskripsi"></textarea>
                             </div>
                             <div class="form-group">
+                              <label>PRODUK DAPAT DIHITUNG</label>
+                              <select class="form-control" name="produk_count" id="produk_count" style="width: 80%">
+                                <option value="1">Ya</option>
+                                <option value="0">Tidak</option>
+                              </select>
+                            </div>
+                            <div class="form-group">
                               <label>JENIS PRODUK</label>
                               <select class="form-control" name="jenis_produk" id="jenis_produk" style="width: 80%">
                                 <option value="1">Tunggal</option>

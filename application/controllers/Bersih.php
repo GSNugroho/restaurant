@@ -727,4 +727,133 @@ class Bersih extends CI_Controller {
 
         echo json_encode($data);
     }
+
+    function printer_nota(){
+        $this->load->library("EscPos.php");
+        
+        try{
+            $connector = new Escpos\PrintConnectors\FilePrintConnector("/dev/usv/lp0");
+
+            $printer = new Escpos\Printer($connector);
+            $printer->text("Hello World!\n");
+            $printer->cut();
+
+            $printer->close();
+        }catch(Exception $e){
+            echo "Couldn't print to this printer: ".$e->getMessage()."\n";
+        }
+    }
+
+    function btraw(){
+        try { 
+            $connector = new \Mike42\Escpos\PrintConnectors\RawbtPrintConnector(); 
+            $printer = new \Mike42\Escpos\Printer($connector, null, 1); 
+            $printer->text("Affichage\n"); 
+            $printer->text("Imprimante\n"); 
+        } catch (Exception $e) { 
+            echo $e->getMessage(); 
+        } finally { 
+            $printer->cut();
+            $printer->pulse();
+            $printer->close(); 
+            // print_r($printer);
+        }
+    }
+
+    function cetak_struk(){
+        try { 
+            $connector = new \Mike42\Escpos\PrintConnectors\RawbtPrintConnector(); 
+            $printer = new \Mike42\Escpos\Printer($connector, null, 1);
+            
+            // isi struk
+            $tanggal = date('D d M Y H:i');
+            $total = 0;
+
+            // logo
+            // $logo = EscposImage::load("resources/escpos-php.png", false);
+            // $printer->setJustification(Printer::JUSTIFY_CENTER);
+            // $printer->graphics($logo);
+
+            // nama toko;
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->selectPrintMode($printer::MODE_DOUBLE_WIDTH);
+            $printer->text("Rumah Makan Kita\n");
+            $printer->selectPrintMode();
+            $printer->text("Jalan Kenanga 14\n");
+            $printer->feed();
+
+            // judul
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("----------------------------------\n");
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            $printer->text("Kasir ");
+            $printer->setJustification($printer::JUSTIFY_RIGHT);
+            $printer->text($this->session->userdata('nama')."\n");
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            $printer->text("Waktu ");
+            $printer->setJustification($printer::JUSTIFY_RIGHT);
+            $printer->text($tanggal."\n");
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            $printer->text("No. Struk ");
+            $printer->setJustification($printer::JUSTIFY_RIGHT);
+            $printer->text($this->get_no_invoice()."\n");
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            $printer->text("Jenis Pembayaran ");
+            $printer->setJustification($printer::JUSTIFY_RIGHT);
+            $printer->text("Tunai\n");
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("----------------------------------\n");
+
+            // isi pesanan
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->setEmphasis(true);
+            $printer->text("PESANAN");
+            $printer->setEmphasis(false);
+            foreach($menus as $menu){
+                $printer->text($menu['nm_menu']."\n");
+                $printer->text($menu['jml_total']." x ".$menu['harga_produk']."   ".((int) $menu['jml_total'] * (int) $menu['harga_produk']));
+                $total = $total + ((int) $menu['jml_total'] * (int) $menu['harga_produk']);
+            }
+            $printer->setEmphasis(true);
+            $printer->text(number_format($total, 0, ',', '.'));
+            $printer->feed();
+
+            $printer->selectPrintMode($printer::MODE_DOUBLE_WIDTH);
+            $printer->text("Bayar ");
+            $printer->text($bayar."\n");
+            $printer->text("Kembali ");
+            $printer->text(number_format(($bayar - $total), 0, ',', '.')."\n");
+
+            // feed
+            $printer->feed(2);
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("Terima Kasih Atas Kunjungan Anda\n");
+            $printer->text("Cuan Sehat Selalu");
+            $printer->feed(2);
+            
+            // // closing
+            // $printer->pulse();
+
+            // $printer->close();
+        } catch (Exception $e) { 
+            echo $e->getMessage(); 
+        } finally { 
+            // $printer->cut();
+            $printer->pulse();
+            $printer->close(); 
+        }
+    }
+
+    function get_no_invoice(){
+        $total_nomor = $this->M_bersih->get_total_no();
+
+        foreach($total_nomor as $row){
+            $nomor = $row['total_tgl_ini'];
+        }
+        $nomor++;
+
+        $nostruk = 'S'.date('ymd').$nomor;
+
+        return $nostruk;
+    }
 }

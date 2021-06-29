@@ -39,10 +39,7 @@
               <div class="card-header p-0 pt-1">
                   <ul class="nav nav-tabs" id="custom-tabs-one-tab" role="tablist">
                       <li class="nav-item">
-                          <a class="nav-link active" id="stok-in" data-toggle="pill" href="#custom-stok-in" role="tab" aria-controls="custom-stok-in" aria-selected="true">Pengeluaran</a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link" id="transaksi" data-toggle="pill" href="#custom-transaksi" role="tab" aria-controls="custom-transaksi" aria-selected="false">Transaksi</a>
+                          <a class="nav-link active" id="transaksi" data-toggle="pill" href="#custom-transaksi" role="tab" aria-controls="custom-transaksi" aria-selected="false">Transaksi</a>
                       </li>
                       <li class="nav-item">
                           <a class="nav-link" id="biaya" data-toggle="pill" href="#custom-biaya" role="tab" aria-controls="custom-biaya" aria-selected="false">Buku Besar</a>
@@ -51,22 +48,7 @@
               </div>
               <div class="card-body">
                 <div class="tab-content" id="custom-tabs-one-tabContent">
-                  <div class="tab-pane fade show active" id="custom-stok-in" role="tabpanel" aria-labelledby="custom-stok-in">
-                    <div class="card-body table-responsive p-0">
-                      <table id="tbl_stok_in" class="table table-borderless table-striped">
-                          <thead>
-                          <tr>
-                              <th class="text-left">WAKTU SUBMIT</th>
-                              <th class="text-left" style="display: none;">ID STOK MASUK</th>
-                              <th class="text-left">CATATAN</th>
-                              <th class="text-left">TANGGAL</th>
-                              <th></th>
-                          </tr>
-                          </thead>
-                      </table>
-                    </div>
-                  </div>
-                  <div class="tab-pane" id="custom-transaksi" role="tabpanel" aria-labelledby="custom-transaksi">
+                  <div class="tab-pane fade show active" id="custom-transaksi" role="tabpanel" aria-labelledby="custom-transaksi">
                     <center center><h4>Transaksi</h4></center>
                     <div>
                       <table>

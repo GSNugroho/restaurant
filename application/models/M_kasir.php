@@ -61,6 +61,24 @@ class M_kasir extends CI_Model{
         return $query->result_array();
     }
 
+    function get_data_penjualan_tanggal($tanggal){
+        $sql = "SELECT
+            tbl_produk.produk_nama as produk_nama,
+            SUM((CAST(tbl_order_detail.order_detail_jumlah as FLOAT))) as jumlah_order,
+            tbl_produk.produk_harga as produk_harga
+        FROM
+            tbl_order_detail
+            JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id 
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id
+        WHERE
+            tbl_order.order_aktif = 1 
+            AND DATE_FORMAT( tbl_order.order_dt_create, '%d-%m-%Y' ) = '$tanggal'
+        GROUP BY tbl_produk.produk_nama, tbl_produk.produk_harga";
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     function get_all_pos(){
         $sql = "SELECT count(*) as allcount FROM tbl_pos";
         $query = $this->db->query($sql);

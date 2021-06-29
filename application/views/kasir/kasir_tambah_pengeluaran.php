@@ -64,7 +64,7 @@
                       <label>JENIS PENGELUARAN</label>
                       <select class="form-control" name="jns_pengeluaran" id="jns_pengeluaran" style="width: 80%;">
                         <option value="0">--Pilih--</option>
-                        <option value="1">Kebutuhan Dapur</option>
+                        <!-- <option value="1">Kebutuhan Dapur</option> -->
                         <option value="2">Operasional Restoran</option>
                       </select>
                     </div>

@@ -994,5 +994,18 @@ class M_bersih extends CI_Model{
         $query = $this->db->query($sql);
         return $query;
     }
+
+    function get_total_no(){
+        $sql = "SELECT
+            COUNT(*) as total_tgl_ini
+        FROM
+            tbl_order 
+        WHERE
+            DATE_FORMAT( tbl_order.order_dt_create, '%d-%m-%Y' ) = DATE_FORMAT(
+            NOW(),
+            '%d-%m-%Y')";
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
 }
 ?>

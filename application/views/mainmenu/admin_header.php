@@ -217,6 +217,22 @@
           </li>
           <li class="nav-header"><h6>Pembukuan</h6></li>
           <li class="nav-item">
+            <a href="<?php echo base_url('Kasir/pengeluaran')?>" class="nav-link">
+              <i class="nav-icon fas fa-money-bill-wave"></i>
+              <p>
+                Keuangan
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="<?php echo base_url('Kasir/pos')?>" class="nav-link">
+              <i class="nav-icon fas fa-book"></i>
+              <p>
+                Pos
+              </p>
+            </a>
+          </li>
+          <li class="nav-item">
             <a href="<?php echo base_url('Bersih/laba');?>" class="nav-link">
               <i class="nav-icon fas fa-box"></i>
               <p>
@@ -240,35 +256,6 @@
               </p>
             </a>
           </li>
-          <!-- <li class="nav-item">
-            <a href="#" class="nav-link">
-              <i class="nav-icon fas fa-box"></i>
-              <p>
-                Inventori Alat
-                <i class="fas fa-angle-left right"></i>
-              </p>
-            </a>
-            <ul class="nav nav-treeview">
-              <li class="nav-item">
-                <a href="<?php echo base_url('Bersih/stok_alat')?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Kartu Stok</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo base_url('Bersih/stok_in_alat')?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stok Masuk</p>
-                </a>
-              </li>
-              <li class="nav-item">
-                <a href="<?php echo base_url('Bersih/stok_out_alat')?>" class="nav-link">
-                  <i class="far fa-circle nav-icon"></i>
-                  <p>Stok Keluar</p>
-                </a>
-              </li>
-            </ul>
-          </li> -->
           <li class="nav-header"><h6>PENGATURAN</h6></li>
           <li class="nav-item">
             <a href="<?php echo base_url('Welcome/logout');?>" class="nav-link">
@@ -308,42 +295,10 @@
           </li>
           <li class="nav-header"><h6>Pembukuan</h6></li>
           <li class="nav-item">
-            <a href="<?php echo base_url('Kasir/pengeluaran')?>" class="nav-link">
-              <i class="nav-icon fas fa-money-bill-wave"></i>
-              <p>
-                Keuangan
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="<?php echo base_url('Kasir/pos')?>" class="nav-link">
-              <i class="nav-icon fas fa-book"></i>
-              <p>
-                Pos
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="<?php echo base_url('Bersih/laba');?>" class="nav-link">
-              <i class="nav-icon fas fa-box"></i>
-              <p>
-                Laba Harian
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="<?php echo base_url('Bersih/laba_resmi');?>" class="nav-link">
-              <i class="nav-icon fas fa-coins"></i>
-              <p>
-                Laba
-              </p>
-            </a>
-          </li>
-          <li class="nav-item">
-            <a href="<?php echo base_url('Bersih/stok_terjual');?>" class="nav-link">
+            <a href="<?php echo base_url('Kasir/laporan_penjualan');?>" class="nav-link">
               <i class="nav-icon fas fa-cubes"></i>
               <p>
-                Laporan Stok
+                Laporan Penjualan
               </p>
             </a>
           </li>

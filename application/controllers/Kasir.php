@@ -35,6 +35,10 @@ class Kasir extends CI_Controller {
         $this->load->view('kasir/kasir_pengeluaran');
     }
 
+    public function laporan_penjualan(){
+        $this->load->view('kasir/kasir_laporan_penjualan');
+    }
+
     public function tambah_pengeluaran(){
         $data = array(
             'produk' => $this->M_bersih->get_semua_stok_kotor(),
@@ -317,5 +321,21 @@ class Kasir extends CI_Controller {
 
         echo json_encode($data);
     }
+
+    function lihat_laporan_penjualan(){
+        $tanggal = date('d-m-Y', strtotime($this->input->post('tgl_laporan', TRUE)));
+
+        if($tanggal == ''){
+            redirect('Kasir/laporan_penjualan');
+        }
+
+        $data = array(
+            'tanggal' => $tanggal,
+            'penjualan' => $this->M_kasir->get_data_penjualan_tanggal($tanggal)
+        );
+
+        $this->load->view('kasir/kasir_laporan_penjualan_detail', $data);
+    }
+
 }
 ?>

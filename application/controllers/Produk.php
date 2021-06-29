@@ -382,7 +382,8 @@ class Produk extends CI_Controller{
 			'produk_dt_create' => date('Y-m-d H:i:s'),
 			'produk_user_create' => $this->session->userdata('nama'),
 			'produk_aktif' => 1,
-			'produk_level' => $produk_level
+			'produk_level' => $produk_level,
+			'produk_count' => $this->input->post('produk_count', true)
 		);
 
 		if($this->input->post('jenis_produk', true) == 2){
