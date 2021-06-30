@@ -55,6 +55,21 @@ class M_bersih extends CI_Model{
         return $query->result_array();
     }
 
+    function get_detail_struk($id){
+        $sql = "SELECT
+            tbl_produk.produk_nama as produk_nama,
+            tbl_produk.produk_harga as produk_harga,
+            tbl_order_detail.order_detail_jumlah as produk_jumlah
+        FROM
+            tbl_order_detail
+            JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id 
+        WHERE
+            tbl_order_detail.order_id = '$id'";
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     function cek_data_resep($id){
         $sql = "SELECT * FROM tbl_resep_produk
         WHERE tbl_resep_produk.resep_produk_id = '$id'";

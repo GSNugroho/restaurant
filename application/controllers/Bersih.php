@@ -761,6 +761,12 @@ class Bersih extends CI_Controller {
     }
 
     function cetak_struk(){
+        $id = $this->input->get('kode', TRUE);
+        $bayar = $this->input->get('bayar', TRUE);
+        $meja = $this->input->get('meja', TRUE);
+
+        $data = $this->M_bersih->get_detail_struk($id);
+
         try { 
             $connector = new \Mike42\Escpos\PrintConnectors\RawbtPrintConnector(); 
             $printer = new \Mike42\Escpos\Printer($connector, null, 1);
@@ -784,45 +790,61 @@ class Bersih extends CI_Controller {
 
             // judul
             $printer->setJustification($printer::JUSTIFY_CENTER);
-            $printer->text("----------------------------------\n");
+            $printer->text("--------------------------------\n");
             $printer->setJustification($printer::JUSTIFY_LEFT);
-            $printer->text("Kasir ");
+            $printer->text("Waktu :");
             $printer->setJustification($printer::JUSTIFY_RIGHT);
-            $printer->text($this->session->userdata('nama')."\n");
+            $printer->text(" ".$tanggal."\n");
             $printer->setJustification($printer::JUSTIFY_LEFT);
-            $printer->text("Waktu ");
+            $printer->text("No. Struk :");
             $printer->setJustification($printer::JUSTIFY_RIGHT);
-            $printer->text($tanggal."\n");
+            $printer->text(" ".$this->get_no_invoice()."\n");
             $printer->setJustification($printer::JUSTIFY_LEFT);
-            $printer->text("No. Struk ");
+            $printer->text("Pembayaran :");
             $printer->setJustification($printer::JUSTIFY_RIGHT);
-            $printer->text($this->get_no_invoice()."\n");
+            $printer->text(" Tunai\n");
             $printer->setJustification($printer::JUSTIFY_LEFT);
-            $printer->text("Jenis Pembayaran ");
+            $printer->text("Meja No. :");
             $printer->setJustification($printer::JUSTIFY_RIGHT);
-            $printer->text("Tunai\n");
+            $printer->text(" ".$meja."\n");
             $printer->setJustification($printer::JUSTIFY_CENTER);
-            $printer->text("----------------------------------\n");
+            $printer->text("--------------------------------\n");
 
             // isi pesanan
             $printer->setJustification($printer::JUSTIFY_CENTER);
             $printer->setEmphasis(true);
-            $printer->text("PESANAN");
+            $printer->text("PESANAN\n");
             $printer->setEmphasis(false);
-            foreach($menus as $menu){
-                $printer->text($menu['nm_menu']."\n");
-                $printer->text($menu['jml_total']." x ".$menu['harga_produk']."   ".((int) $menu['jml_total'] * (int) $menu['harga_produk']));
-                $total = $total + ((int) $menu['jml_total'] * (int) $menu['harga_produk']);
-            }
-            $printer->setEmphasis(true);
-            $printer->text(number_format($total, 0, ',', '.'));
             $printer->feed();
-
-            $printer->selectPrintMode($printer::MODE_DOUBLE_WIDTH);
-            $printer->text("Bayar ");
-            $printer->text($bayar."\n");
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            foreach($data as $row){
+                $printer->text($row['produk_nama']."\n");
+                $printer->text(" Rp ".number_format($row['produk_harga'], 0, ',', '.')." x ".$row['produk_jumlah']."     =  Rp ".number_format(((int) $row['produk_harga'] * (int) $row['produk_jumlah']), 0, ',', '.')."\n");
+                $total = $total + ((int) $row['produk_harga'] * (int) $row['produk_jumlah']);
+            }
+            // $printer->text("Nasi Oseng Ayam Balado\n");
+            // $printer->text(" Rp 10.000 x 4 = Rp 40.000\n");
+            // $printer->text("Nasi Oseng Ayam Balado\n");
+            // $printer->text(" Rp 10.000 x 4 = Rp 40.000\n");
+            // $printer->text("Nasi Oseng Ayam Balado\n");
+            // $printer->text(" Rp 10.000 x 4 = Rp 40.000\n");
+            // $printer->text("Nasi Oseng Ayam Balado\n");
+            // $printer->text(" Rp 10.000 x 4 = Rp 40.000\n");
+            $printer->setJustification($printer::JUSTIFY_RIGHT);
+            $printer->feed();
+            $printer->setEmphasis(true);
+            $printer->text("Total ");
+            $printer->text(" Rp ".number_format($total, 0, ',', '.')."\n");
+            $printer->setEmphasis(false);
+            $printer->feed();
+            $printer->feed();
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            $printer->text("Bayar   ");
+            $printer->text(" Rp ".number_format($bayar, 0, ',', '.')."\n");
+            $printer->setEmphasis(true);
             $printer->text("Kembali ");
-            $printer->text(number_format(($bayar - $total), 0, ',', '.')."\n");
+            $printer->text(" Rp ".number_format(((int) $bayar - (int) $total), 0, ',', '.')."\n");
+            $printer->setEmphasis(false);
 
             // feed
             $printer->feed(2);
@@ -831,10 +853,6 @@ class Bersih extends CI_Controller {
             $printer->text("Cuan Sehat Selalu");
             $printer->feed(2);
             
-            // // closing
-            // $printer->pulse();
-
-            // $printer->close();
         } catch (Exception $e) { 
             echo $e->getMessage(); 
         } finally { 

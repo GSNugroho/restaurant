@@ -362,7 +362,7 @@
                   <tr>
                     <td>
                     <div class="form-group">
-                      <label>Nama Pelanggan</label>
+                      <label>Nomor Meja</label>
                     </div>
                     </td>
                     <td>&nbsp;</td>
@@ -539,24 +539,34 @@
             $('#pelanggan_nm').val('');
             $('#pelanggan_diskon').val('');
             $('#pelanggan_byr').val('');
+            $('#keterangan').val('');
             
             if(pelanggan_byr == total_byr_pesanan){
                 Swal.fire(
                 'Transaksi Berhasil',
                 'Terima Kasih',
                 'success'
-              )
+              );
+              print_struk(kode, pelanggan_byr, pelanggan_nm);
             }else{
               var kembalian = parseInt(pelanggan_byr) - parseInt(total_byr_pesanan);
               Swal.fire(
                 'Transaksi Berhasil',
                 'Terima Kasih. Kembalian sebesar '+kembalian+'',
                 'success'
-              )
+              );
+              print_struk(kode, pelanggan_byr, pelanggan_nm);
             }
           });
           
         })
+
+        function print_struk(kode, pelanggan_byr, pelanggan_nm){
+          var dataString = "kode="+kode+"&bayar="+pelanggan_byr+'&meja='+pelanggan_nm;
+          $.get("<?php echo base_url('Bersih/cetak_struk')?>", dataString, function(data){
+            window.location.href = data;
+          });
+        }
       </script>
   </div>
   

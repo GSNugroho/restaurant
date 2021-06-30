@@ -31,7 +31,7 @@
                      <button class="btn btn-block btn-outline-secondary">Impor Stok Masuk</button> 
                 </div> -->
                 <div class="col-2">
-                    <!-- <a class="btn btn-block btn-secondary" href="<?php echo base_url().'Bersih/tambah_order'?>">Tambah Order</a> -->
+                    <a class="btn btn-block btn-secondary" href="intent:base64,G0AbYQEbISBSdW1haCBNYWthbiBLaXRhChshAEphbGFuIEtlbmFuZ2EgMTQKChthAS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tChthAFdha3R1IDobYQIgV2VkIDMwIEp1biAyMDIxIDA4OjA5ChthAE5vLiBTdHJ1ayA6G2ECIFMyMTA2MzAzChthAFBlbWJheWFyYW4gOhthAiBUdW5haQobYQEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQobYQEbRQFQRVNBTkFOChtFAAobYQBOYXNpIE9zZW5nIEF5YW0gQmFsYWRvCiBScCAxMC4wMDAgeCA0ID0gUnAgNDAuMDAwCk5hc2kgT3NlbmcgQXlhbSBCYWxhZG8KIFJwIDEwLjAwMCB4IDQgPSBScCA0MC4wMDAKTmFzaSBPc2VuZyBBeWFtIEJhbGFkbwogUnAgMTAuMDAwIHggNCA9IFJwIDQwLjAwMApOYXNpIE9zZW5nIEF5YW0gQmFsYWRvCiBScCAxMC4wMDAgeCA0ID0gUnAgNDAuMDAwChthAgobRQFUb3RhbCBScCAxNjAuMDAwG0UACgobYQBCYXlhciAgIFJwIDIwMC4wMDAKS2VtYmFsaSBScCA0MC4wMDAKG2QCG2EBVGVyaW1hIEthc2loIEF0YXMgS3VuanVuZ2FuIEFuZGEKQ3VhbiBTZWhhdCBTZWxhbHUbZAIbcDA8eA==#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;">Print Order</a>
                     <!-- <button type="button" class="btn btn-block btn-secondary" data-toggle="modal" data-target="#modal-default">
                   .......
                 </button> -->
