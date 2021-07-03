@@ -542,20 +542,65 @@
             $('#keterangan').val('');
             
             if(pelanggan_byr == total_byr_pesanan){
-                Swal.fire(
-                'Transaksi Berhasil',
-                'Terima Kasih',
-                'success'
-              );
+              //   Swal.fire(
+              //   'Transaksi Berhasil',
+              //   'Terima Kasih',
+              //   'success'
+              // );
+
               print_struk(kode, pelanggan_byr, pelanggan_nm);
+                
+                const swalWithBootstrapButtons = Swal.mixin({
+                  customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-info'
+                  },
+                  buttonsStyling: false
+                })
+
+                swalWithBootstrapButtons.fire({
+                  title: 'Transaksi Berhasil',
+                  text: 'Terima Kasih',
+                  icon: 'success',
+                  showCancelButton: true,
+                  confirmButtonText: 'OK',
+                  cancelButtonText: 'Print Struk'
+                }).then((result) => {
+                  if(result.dismiss === Swal.DismissReason.cancel){
+                    print_struk(kode, pelanggan_byr, pelanggan_nm);
+                  }
+                })
+              
             }else{
               var kembalian = parseInt(pelanggan_byr) - parseInt(total_byr_pesanan);
-              Swal.fire(
-                'Transaksi Berhasil',
-                'Terima Kasih. Kembalian sebesar '+kembalian+'',
-                'success'
-              );
+              // Swal.fire(
+              //   'Transaksi Berhasil',
+              //   'Terima Kasih. Kembalian sebesar '+kembalian+'',
+              //   'success'
+              // );
+
               print_struk(kode, pelanggan_byr, pelanggan_nm);
+
+              const swalWithBootstrapButtons = Swal.mixin({
+                customClass: {
+                  confirmButton: 'btn btn-success',
+                  cancelButton: 'btn btn-info'
+                },
+                buttonStyling: false
+              })
+
+              swalWithBootstrapButtons.fire({
+                title: 'Transaksi Berhasil',
+                text: 'Terima Kasih. Kembalian sebesar '+kembalian+'',
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'OK',
+                cancelButtonText: 'Print Struk'
+              }).then((result) => {
+                if(result.dismiss === Swal.DismissReason.cancel){
+                  print_struk(kode, pelanggan_byr, pelanggan_nm);
+                }
+              })
             }
           });
           

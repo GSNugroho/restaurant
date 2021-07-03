@@ -118,7 +118,7 @@ class Bersih extends CI_Controller {
 
         if($cek_tgl_stok_out_akhir){
             foreach($cek_tgl_stok_out_akhir as $row){
-                if($row['tgl'] == date('d-m-Y')){
+                if($row['tgl'] != date('d-m-Y')){
                     $data_stok_out_bersih = array(
                         'stok_out_id' => $this->get_kode_stok_out_id(),
                         'stok_out_dt_masuk' => date('Y-m-d'),
@@ -770,13 +770,14 @@ class Bersih extends CI_Controller {
         try { 
             $connector = new \Mike42\Escpos\PrintConnectors\RawbtPrintConnector(); 
             $printer = new \Mike42\Escpos\Printer($connector, null, 1);
+            // $img = new \Mike42\Escpos\EscposImage();
             
             // isi struk
             $tanggal = date('D d M Y H:i');
             $total = 0;
 
             // logo
-            // $logo = EscposImage::load("resources/escpos-php.png", false);
+            // $logo = $img::load("resources/logo.png", false);
             // $printer->setJustification(Printer::JUSTIFY_CENTER);
             // $printer->graphics($logo);
 
@@ -814,6 +815,8 @@ class Bersih extends CI_Controller {
             $printer->setJustification($printer::JUSTIFY_CENTER);
             $printer->setEmphasis(true);
             $printer->text("PESANAN\n");
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("--------------------------------\n");
             $printer->setEmphasis(false);
             $printer->feed();
             $printer->setJustification($printer::JUSTIFY_LEFT);
@@ -822,14 +825,8 @@ class Bersih extends CI_Controller {
                 $printer->text(" Rp ".number_format($row['produk_harga'], 0, ',', '.')." x ".$row['produk_jumlah']."     =  Rp ".number_format(((int) $row['produk_harga'] * (int) $row['produk_jumlah']), 0, ',', '.')."\n");
                 $total = $total + ((int) $row['produk_harga'] * (int) $row['produk_jumlah']);
             }
-            // $printer->text("Nasi Oseng Ayam Balado\n");
-            // $printer->text(" Rp 10.000 x 4 = Rp 40.000\n");
-            // $printer->text("Nasi Oseng Ayam Balado\n");
-            // $printer->text(" Rp 10.000 x 4 = Rp 40.000\n");
-            // $printer->text("Nasi Oseng Ayam Balado\n");
-            // $printer->text(" Rp 10.000 x 4 = Rp 40.000\n");
-            // $printer->text("Nasi Oseng Ayam Balado\n");
-            // $printer->text(" Rp 10.000 x 4 = Rp 40.000\n");
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("--------------------------------\n");
             $printer->setJustification($printer::JUSTIFY_RIGHT);
             $printer->feed();
             $printer->setEmphasis(true);
@@ -837,7 +834,8 @@ class Bersih extends CI_Controller {
             $printer->text(" Rp ".number_format($total, 0, ',', '.')."\n");
             $printer->setEmphasis(false);
             $printer->feed();
-            $printer->feed();
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("================================\n");
             $printer->setJustification($printer::JUSTIFY_LEFT);
             $printer->text("Bayar   ");
             $printer->text(" Rp ".number_format($bayar, 0, ',', '.')."\n");
