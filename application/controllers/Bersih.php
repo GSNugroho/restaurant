@@ -684,16 +684,38 @@ class Bersih extends CI_Controller {
     }
 
     function get_all_laba(){
+        $bulan = date('m');
+        $tahun = date('Y');
+
         $data = array(
-            'modal' => $this->M_bersih->get_modal(),
-            'uang_masuk' => $this->M_bersih->itung_uang_masuk(),
-            'uang_hpp' => $this->M_bersih->itung_uang_hpp(),
-            'pengeluaran' => $this->M_bersih->itung_uang_pengeluaran(),
-            'pembelian_bb' => $this->M_bersih->itung_pembelian_bb(),
-            'tanggal' => $this->M_bersih->get_tanggal(),
-            'stok_masuk' => $this->M_bersih->get_stok_masuk(),
-            'stok_jual' => $this->M_bersih->get_stok_jual(),
-            'stok_jual_nc' => $this->M_bersih->get_stok_jual_nc()
+            'modal' => $this->M_bersih->get_modal($bulan, $tahun),
+            'uang_masuk' => $this->M_bersih->itung_uang_masuk($bulan, $tahun),
+            'uang_hpp' => $this->M_bersih->itung_uang_hpp($bulan, $tahun),
+            'pengeluaran' => $this->M_bersih->itung_uang_pengeluaran($bulan, $tahun),
+            'pembelian_bb' => $this->M_bersih->itung_pembelian_bb($bulan, $tahun),
+            'tanggal' => $this->M_bersih->get_tanggal($bulan, $tahun),
+            'stok_masuk' => $this->M_bersih->get_stok_masuk($bulan, $tahun),
+            'stok_jual' => $this->M_bersih->get_stok_jual($bulan, $tahun),
+            'stok_jual_nc' => $this->M_bersih->get_stok_jual_nc($bulan, $tahun)
+        );
+
+        echo json_encode($data);
+    }
+
+    function pilih_get_all_laba(){
+        $bulan = $this->input->get('bulan', TRUE);
+        $tahun = $this->input->get('tahun', TRUE);
+        
+        $data = array(
+            'modal' => $this->M_bersih->get_modal($bulan, $tahun),
+            'uang_masuk' => $this->M_bersih->itung_uang_masuk($bulan, $tahun),
+            'uang_hpp' => $this->M_bersih->itung_uang_hpp($bulan, $tahun),
+            'pengeluaran' => $this->M_bersih->itung_uang_pengeluaran($bulan, $tahun),
+            'pembelian_bb' => $this->M_bersih->itung_pembelian_bb($bulan, $tahun),
+            'tanggal' => $this->M_bersih->get_tanggal($bulan, $tahun),
+            'stok_masuk' => $this->M_bersih->get_stok_masuk($bulan, $tahun),
+            'stok_jual' => $this->M_bersih->get_stok_jual($bulan, $tahun),
+            'stok_jual_nc' => $this->M_bersih->get_stok_jual_nc($bulan, $tahun)
         );
 
         echo json_encode($data);

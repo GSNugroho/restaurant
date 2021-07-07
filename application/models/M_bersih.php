@@ -41,7 +41,7 @@ class M_bersih extends CI_Model{
         $this->db->update('tbl_order', $data);
     }
 
-    function itung_uang_masuk(){
+    function itung_uang_masuk($bulan, $tahun){
         $sql = "SELECT
             tbl_order_detail.order_detail_jumlah AS jumlah,
             tbl_produk.produk_harga AS harga ,
@@ -50,7 +50,7 @@ class M_bersih extends CI_Model{
             tbl_order_detail
             JOIN tbl_order ON tbl_order_detail.order_id = tbl_order.order_id
             JOIN tbl_produk ON tbl_order_detail.order_detail_produk_id = tbl_produk.produk_id
-        WHERE MONTH(tbl_order.order_dt_create) = MONTH(NOW()) AND YEAR(tbl_order.order_dt_create) = YEAR(NOW())";
+        WHERE MONTH(tbl_order.order_dt_create) = '$bulan' AND YEAR(tbl_order.order_dt_create) = '$tahun'";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
@@ -298,7 +298,7 @@ class M_bersih extends CI_Model{
         return $query->result_array();
     }
 
-    function get_stok_masuk(){
+    function get_stok_masuk($bulan, $tahun){
         $sql = "SELECT
             tbl_stok_in_bersih_detail.stok_in_detail_produk_id as produk_id,
             tbl_stok_in_bersih_detail.stok_in_detail_jumlah as jumlah_stok,
@@ -308,15 +308,13 @@ class M_bersih extends CI_Model{
             tbl_stok_in_bersih_detail
             JOIN tbl_stok_in_bersih ON tbl_stok_in_bersih_detail.stok_in_detail_id = tbl_stok_in_bersih.stok_in_id 
         WHERE
-            MONTH ( tbl_stok_in_bersih.stok_in_dt_masuk ) = MONTH (
-            NOW()) 
-            AND YEAR ( tbl_stok_in_bersih.stok_in_dt_masuk ) = YEAR (
-            tbl_stok_in_bersih.stok_in_dt_masuk)";
+            MONTH ( tbl_stok_in_bersih.stok_in_dt_masuk ) = '$bulan'
+            AND YEAR ( tbl_stok_in_bersih.stok_in_dt_masuk ) = '$tahun'";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
 
-    function get_stok_jual(){
+    function get_stok_jual($bulan, $tahun){
         $sql = "SELECT
             tbl_stok_out_bersih_detail.stok_out_detail_produk_id AS produk_id,
             tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS jumlah_stok,
@@ -327,16 +325,14 @@ class M_bersih extends CI_Model{
             JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id 
             JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id
         WHERE
-            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
-            NOW()) 
-            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR (
-            tbl_stok_out_bersih.stok_out_dt_masuk)
+            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = '$bulan'
+            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = '$tahun'
             AND tbl_produk.produk_count = '1' ";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
 
-    function get_stok_jual_nc(){
+    function get_stok_jual_nc($bulan, $tahun){
         $sql = "SELECT
             tbl_stok_out_bersih_detail.stok_out_detail_produk_id AS produk_id,
             tbl_stok_out_bersih_detail.stok_out_detail_jumlah AS jumlah_stok,
@@ -347,33 +343,37 @@ class M_bersih extends CI_Model{
             JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id
             JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id 
         WHERE
-            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = MONTH (
-            NOW()) 
-            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = YEAR (
-            tbl_stok_out_bersih.stok_out_dt_masuk)
+            MONTH ( tbl_stok_out_bersih.stok_out_dt_masuk ) = '$bulan'
+            AND YEAR ( tbl_stok_out_bersih.stok_out_dt_masuk ) = '$tahun'
             AND tbl_produk.produk_count = '0' AND tbl_stok_out_bersih.stok_out_user_create NOT LIKE 'Teller 1'";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
 
-    function get_tanggal(){
-        $sql = "SELECT DISTINCT DATE_FORMAT(stok_in_dt_masuk,'%d-%m-%Y') as stok_in_dt_masuk FROM tbl_stok_in_bersih WHERE MONTH(stok_in_dt_masuk) = MONTH(NOW())";
+    function get_tanggal($bulan, $tahun){
+        $sql = "SELECT DISTINCT DATE_FORMAT(stok_in_dt_masuk,'%d-%m-%Y') as stok_in_dt_masuk 
+        FROM tbl_stok_in_bersih 
+        WHERE MONTH(stok_in_dt_masuk) = '$bulan' 
+            AND YEAR(stok_in_dt_masuk) = '$tahun'";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
 
-    function itung_uang_hpp(){
+    function itung_uang_hpp($bulan, $tahun){
         $sql = "SELECT
                 tbl_stok_out_bersih_detail.stok_out_detail_jumlah as jumlah,
                 tbl_produk.produk_harga as harga
         FROM
             tbl_stok_out_bersih_detail
-            JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id";
+            JOIN tbl_stok_out_bersih ON tbl_stok_out_bersih_detail.stok_out_detail_id = tbl_stok_out_bersih.stok_out_id
+            JOIN tbl_produk ON tbl_stok_out_bersih_detail.stok_out_detail_produk_id = tbl_produk.produk_id
+            WHERE MONTH(tbl_stok_out_bersih.stok_out_dt_masuk) = '$bulan' AND YEAR(tbl_stok_out_bersih.stok_out_dt_masuk) = '$tahun'
+            ";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
 
-    function itung_pembelian_bb(){
+    function itung_pembelian_bb($bulan, $tahun){
         $sql = "SELECT
             tbl_stok_in_bersih_detail.stok_in_detail_jumlah as jumlah,
             tbl_stok_in_bersih_detail.stok_in_detail_harga as harga
@@ -381,12 +381,15 @@ class M_bersih extends CI_Model{
             tbl_stok_in_bersih_detail
             JOIN tbl_stok_in_bersih ON tbl_stok_in_bersih_detail.stok_in_detail_id = tbl_stok_in_bersih.stok_in_id
             JOIN tbl_produk ON tbl_stok_in_bersih_detail.stok_in_detail_produk_id = tbl_produk.produk_id
-        WHERE tbl_produk.produk_kategori = 'HT-000002'";
+        WHERE 
+            MONTH(tbl_stok_in_bersih.stok_in_dt_masuk) = '$bulan'
+            AND YEAR(tbl_stok_in_bersih.stok_in_dt_masuk) = '$tahun'
+            AND tbl_produk.produk_kategori = 'HT-000002'";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
 
-    function itung_uang_pengeluaran(){
+    function itung_uang_pengeluaran($bulan, $tahun){
         $sql = "SELECT
             tbl_stok_in_bersih_detail.stok_in_detail_jumlah as jumlah,
             tbl_stok_in_bersih_detail.stok_in_detail_harga as harga
@@ -394,7 +397,9 @@ class M_bersih extends CI_Model{
             tbl_stok_in_bersih_detail
             JOIN tbl_stok_in_bersih ON tbl_stok_in_bersih_detail.stok_in_detail_id = tbl_stok_in_bersih.stok_in_id
         WHERE 
-            tbl_stok_in_bersih.stok_in_user_create LIKE '%Teller 1%'";
+            MONTH(tbl_stok_in_bersih.stok_in_dt_masuk) = '$bulan'
+            AND YEAR(tbl_stok_in_bersih.stok_in_dt_masuk) = '$tahun'
+            AND tbl_stok_in_bersih.stok_in_user_create LIKE '%Teller 1%'";
         $query = $this->db->query($sql);
         return $query->result_array();
     }
@@ -558,13 +563,15 @@ class M_bersih extends CI_Model{
         return $query->result_array();
     }
 
-    function get_modal(){
+    function get_modal($bulan, $tahun){
         $sql = "SELECT
             SUM(CAST(tbl_transaksi.saldo AS FLOAT)) AS saldo 
         FROM
             tbl_transaksi 
         WHERE
             kd_pos = '111'
+            AND MONTH(tbl_transaksi.tgl_input) = '$bulan' 
+            AND YEAR(tbl_transaksi.tgl_input) = '$tahun'
         ";
         $query = $this->db->query($sql);
         return $query->result_array();

@@ -21,6 +21,7 @@ class Kasir extends CI_Controller {
             'produk' => $this->M_produk->get_semua_produk_jual()
         );
         $this->load->view('kasir/kasir_dashboard', $data);
+        // $this->load->view('kasir/kasir_backup', $data);
     }
 
     public function order(){
