@@ -10,7 +10,7 @@ class Transaksi extends CI_Controller {
             $this->load->model('M_produk');
             $this->load->model('M_transaksi');
         }else{
-            $this->session->set_flashdata('error', 'Maaf, Anda Hapus Login Dahulu');
+            $this->session->set_flashdata('error', 'Maaf, Anda Harus Login Dahulu');
 			redirect('Welcome');
 		}
     }

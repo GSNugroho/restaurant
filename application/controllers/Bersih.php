@@ -9,7 +9,7 @@ class Bersih extends CI_Controller {
             $this->load->model('M_kategori');
             $this->load->model('M_produk');
         }else{
-            $this->session->set_flashdata('error', 'Maaf, Anda Hapus Login Dahulu');
+            $this->session->set_flashdata('error', 'Maaf, Anda Harus Login Dahulu');
 			redirect('Welcome');
 		}
     }
