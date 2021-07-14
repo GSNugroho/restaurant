@@ -41,14 +41,14 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Tambah Order</h1>
+            <h1 class="m-0">Order Menu</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
+            <!-- <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="#">Home</a></li>
               <li class="breadcrumb-item"><a href="#">Order</a></li>
               <li class="breadcrumb-item active">Tambah Order</li>
-            </ol>
+            </ol> -->
           </div><!-- /.col -->
         </div><!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -56,7 +56,7 @@
     <section class="content">
       <div class="container-fluid">
         <div class="row">
-          <div class="col-12">
+          <div class="col-6">
             <div class="card">
                 <div>
                   <div class="btn-group w-100 mb-2">
@@ -69,7 +69,7 @@
                         }
                     ?>
                   </div>
-                  <div class="mb-2" style="margin-left: 1%;">
+                  <div class="mb-2" style="margin-left: 1px;">
                     <!-- <a class="btn btn-secondary" href="javascript:void(0)" data-shuffle> Shuffle items </a> -->
                     <!-- <div class="float-right">
                       <select class="custom-select" style="width: auto;" data-sortOrder>
@@ -84,12 +84,12 @@
                   </div>
                 </div>
                 <div>
-                  <div class="filter-container p-0 row" style="margin-left: 1%;">
+                  <div class="filter-container">
                     <?php
                         foreach($produk->result_array() as $row){
                             if($row['produk_kategori'] != 'HT-000002' && $row['produk_kategori'] != 'HT-000005'){
                               echo '
-                              <div class="filtr-item col-1" data-category="'.$row['produk_kategori'].'" data-sort="white sample" style="height: 200px;">
+                              <div class="filtr-item col-2" data-category="'.$row['produk_kategori'].'" data-sort="white sample" style="height: 200px;weight: 150px;">
                                   <img class="img-fluid mb-2 imageku" value="'.$row['produk_nama'].'" src="'.sprintf("./upload/%s", $row['produk_foto']).'" class="img-fluid mb-2" alt="'.$row['produk_nama'].'" onClick="order_add(\''.$row['produk_id'].'\')"/>
                                   '.$row['produk_nama'].'
                               </div>';
@@ -160,7 +160,7 @@
                       var row = 0;
 
                       for(var x=1; x < $("#tbl_pesanan tr").length; x++){
-                          cek = document.getElementById("tbl_pesanan").rows[x].cells[5].innerHTML;
+                          cek = document.getElementById("tbl_pesanan").rows[x].cells[4].innerHTML;
                           if(value == cek){
                               number += 1;
                               row = x;
@@ -170,12 +170,16 @@
                       }
 
                       if(number == 1){
-                          var sblm = document.getElementById("tbl_pesanan").rows[row].cells[2].innerHTML;
-                          var ssdh = document.getElementById("tbl_pesanan").rows[row].cells[2].innerHTML = parseInt(sblm) + 1;
+                          // var sblm = document.getElementById("tbl_pesanan").rows[row].cells[2].innerHTML;
+                          var sblm = $('#produk_jml'+row).val();
+                          // var ssdh = document.getElementById("tbl_pesanan").rows[row].cells[2].innerHTML = parseInt(sblm) + 1;
+                          var ssdh = $('#produk_jml'+row).val(parseInt(sblm) + 1);
 
-                          var con = document.getElementById("tbl_pesanan").rows[row].cells[3].innerHTML;
-                          var konv = con.replace(/[.]/g, "");
-                          document.getElementById("tbl_pesanan").rows[row].cells[4].innerHTML = uang(parseInt(konv) * ssdh);
+                          var hitssdh = $('#produk_jml'+row).val();
+
+                          // var con = document.getElementById("tbl_pesanan").rows[row].cells[3].innerHTML;
+                          // var konv = con.replace(/[.]/g, "");
+                          // document.getElementById("tbl_pesanan").rows[row].cells[3].innerHTML = uang(parseInt(konv) * hitssdh);
                       }else{
                           $.get("<?php echo base_url().'Produk/get_produk_detail';?>", dataString, function(data){
                               html += `
@@ -206,10 +210,10 @@
                     }
                 }
             </script>
-          <!-- </div>
-          
-          <div class="col-6"> -->
-            <div class="card">
+            <!-- /.card -->
+          </div>
+          <div class="col-6">
+          <div class="card">
                 <form action="<?php echo base_url().'Bersih/tambah_order_baru';?>" method="post" enctype="multipart/form-data" autocomplete="off">
                   <div class="col-sm-12">
                   <br>
@@ -251,7 +255,6 @@
                 </form>
               <!-- /.card -->
             </div>
-            <!-- /.card -->
           </div>
           <!-- /.col -->
         </div>
@@ -316,7 +319,7 @@
     </script>
 
     <div class="modal fade" id="modal-confim">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
               <h4 class="modal-title">Konfirmasi Pembayaran : <p id="stok_out_kd"></p></h4>
@@ -325,99 +328,111 @@
               </button>
             </div>
             <div class="modal-body">
-              <table>
-                <tr>
-                  <td><i class="nav-icon fas fa-calendar-alt"></i></td>
-                  <td>:</td>
-                  <td style="margin: 0;">&nbsp;<?php date_default_timezone_set("Asia/Jakarta");echo date('d-m-Y / H:i')?></td>
-                </tr>
-                <tr>
-                  <td><i class="nav-icon fas fa-user-edit"></i></td>
-                  <td>:</td>
-                  <td style="margin: 0;">&nbsp;<?php echo $this->session->userdata('nama')?></td>
-                </tr>
-              </table>
+              <div class="row">
+                <div class="col-6">
+                  <table>
+                    <tr>
+                      <td><i class="nav-icon fas fa-calendar-alt"></i></td>
+                      <td>:</td>
+                      <td style="margin: 0;">&nbsp;<?php date_default_timezone_set("Asia/Jakarta");echo date('d-m-Y / H:i')?></td>
+                    </tr>
+                    <tr>
+                      <td><i class="nav-icon fas fa-user-edit"></i></td>
+                      <td>:</td>
+                      <td style="margin: 0;">&nbsp;<?php echo $this->session->userdata('nama')?></td>
+                    </tr>
+                  </table>
 
-              <table class="table table-borderless" id="tbl_confim">
-                <thead>
-                  <tr style="background-color: #6c757d;">
-                    <th style="text-align: center;">No.</th>
-                    <th style="text-align: center;">Pesanan</th>
-                    <th style="text-align: right;">Jumlah</th>
-                    <th style="text-align: right;">Harga</th>
-                    <th style="text-align: right;">Sub Total</th>
-                  </tr>
-                </thead>
-                <tbody id="detail_tbl_confim">
-                </tbody>
-                <tfoot>
-                  <tr style="background-color: #6c757d;">
-                    <th colspan="4" style="text-align: right;">Total</th>
-                    <th id="total_semua" style="text-align: right;"></th>
-                  </tr>
-                </tfoot>
-              </table>
-              <div class="col-12">
-                <table>
-                  <tr>
-                    <td>
-                    <div class="form-group">
-                      <label>Nomor Meja</label>
-                    </div>
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>
-                    <div class="form-group">
-                      <input class="form-control" type="text" id="pelanggan_nm" name="pelanggan_nm">
-                    </div>
-                    </td>
-                    <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
-                    <!-- <td>
+                  <table class="table table-borderless" id="tbl_confim">
+                    <thead>
+                      <tr style="background-color: #6c757d;">
+                        <th style="text-align: center;">No.</th>
+                        <th style="text-align: center;">Pesanan</th>
+                        <th style="text-align: right;">Jumlah</th>
+                        <th style="text-align: right;">Harga</th>
+                        <th style="text-align: right;">Sub Total</th>
+                      </tr>
+                    </thead>
+                    <tbody id="detail_tbl_confim">
+                    </tbody>
+                    <tfoot>
+                      <tr style="background-color: #6c757d;">
+                        <th colspan="4" style="text-align: right;">Total</th>
+                        <th id="total_semua" style="text-align: right;"></th>
+                      </tr>
+                    </tfoot>
+                  </table>
+                </div>
+                <div class="col-6">
+                  <table style="width: 100%">
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td>&nbsp;</td>
+                    </tr>
+                    <tr>
+                      <td>
                       <div class="form-group">
-                        <label>Diskon</label>
+                        <label>Nomor Meja</label>
                       </div>
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>
+                      </td>
+                      <td>&nbsp;</td>
+                      <td>
                       <div class="form-group">
-                        <input class="form-control" type="hidden" id="pelanggan_diskon" name="pelanggan_diskon" style="text-align: right;" placeholder="%" value="0">
+                        <input class="form-control" type="text" id="pelanggan_nm" name="pelanggan_nm">
                       </div>
-                    </td> -->
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="form-group">
-                        <label>Keterangan</label>
-                      </div>
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>
-                      <div class="form-group">
-                        <textarea class= "form-control" id="keterangan" name="keterangan"></textarea>
-                      </div>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>
-                      <div class="form-group">
-                        <label>Bayar</label>
-                      </div>
-                    </td>
-                    <td>&nbsp;</td>
-                    <td>
-                      <div class="form-group">
-                        <input class="form-control" id="pelanggan_byr" name="pelanggan_byr" style="text-align: right;" placeholder="Rp 0">
-                      </div>
-                    </td>
-                  </tr>
-                </table>
-                <table>
-                  <tr>
-                    <td><button class="btn btn-success" id="bayar_pesanan" name="bayar_pesanan" type="button" disabled>BAYAR</button></td>
-                  </tr>
-                </table>
-                <input type="hidden" name="data" id="data">
+                      </td>
+                      <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                      <!-- <td>
+                        <div class="form-group">
+                          <label>Diskon</label>
+                        </div>
+                      </td>
+                      <td>&nbsp;</td>
+                      <td>
+                        <div class="form-group">
+                          <input class="form-control" type="hidden" id="pelanggan_diskon" name="pelanggan_diskon" style="text-align: right;" placeholder="%" value="0">
+                        </div>
+                      </td> -->
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="form-group">
+                          <label>Keterangan</label>
+                        </div>
+                      </td>
+                      <td>&nbsp;</td>
+                      <td>
+                        <div class="form-group">
+                          <textarea class= "form-control" id="keterangan" name="keterangan"></textarea>
+                        </div>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="form-group">
+                          <label>Bayar</label>
+                        </div>
+                      </td>
+                      <td>&nbsp;</td>
+                      <td>
+                        <div class="form-group">
+                          <input class="form-control" id="pelanggan_byr" name="pelanggan_byr" style="text-align: right;" placeholder="Rp 0">
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                  <table style="float: right;">
+                    <tr>
+                      <td><button class="btn btn-success" id="bayar_pesanan" name="bayar_pesanan" type="button" disabled>BAYAR</button></td>
+                    </tr>
+                  </table>
+                  <input type="hidden" name="data" id="data">
+                </div>
               </div>
+              
+              
             </div>
             <div class="modal-footer justify-content-between">
             </div>

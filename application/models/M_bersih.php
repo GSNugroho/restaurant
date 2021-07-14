@@ -70,6 +70,18 @@ class M_bersih extends CI_Model{
         return $query->result_array();
     }
 
+    function get_meja_struk($id){
+        $sql = "SELECT 
+            order_nm_pemesan
+        FROM
+            tbl_order
+        WHERE
+            order_id = '$id'";
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     function cek_data_resep($id){
         $sql = "SELECT * FROM tbl_resep_produk
         WHERE tbl_resep_produk.resep_produk_id = '$id'";

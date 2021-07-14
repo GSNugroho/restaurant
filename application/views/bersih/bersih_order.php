@@ -27,14 +27,8 @@
         <div class="row">
           <div class="col-12">
             <div class="row">
-                <!-- <div class="col-2">
-                     <button class="btn btn-block btn-outline-secondary">Impor Stok Masuk</button> 
-                </div> -->
                 <div class="col-2">
                     <a class="btn btn-block btn-secondary" href="intent:base64,G0AbYQEbISBSdW1haCBNYWthbiBLaXRhChshAEphbGFuIEtlbmFuZ2EgMTQKChthAS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tChthAFdha3R1IDobYQIgV2VkIDMwIEp1biAyMDIxIDA4OjA5ChthAE5vLiBTdHJ1ayA6G2ECIFMyMTA2MzAzChthAFBlbWJheWFyYW4gOhthAiBUdW5haQobYQEtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLQobYQEbRQFQRVNBTkFOChtFAAobYQBOYXNpIE9zZW5nIEF5YW0gQmFsYWRvCiBScCAxMC4wMDAgeCA0ID0gUnAgNDAuMDAwCk5hc2kgT3NlbmcgQXlhbSBCYWxhZG8KIFJwIDEwLjAwMCB4IDQgPSBScCA0MC4wMDAKTmFzaSBPc2VuZyBBeWFtIEJhbGFkbwogUnAgMTAuMDAwIHggNCA9IFJwIDQwLjAwMApOYXNpIE9zZW5nIEF5YW0gQmFsYWRvCiBScCAxMC4wMDAgeCA0ID0gUnAgNDAuMDAwChthAgobRQFUb3RhbCBScCAxNjAuMDAwG0UACgobYQBCYXlhciAgIFJwIDIwMC4wMDAKS2VtYmFsaSBScCA0MC4wMDAKG2QCG2EBVGVyaW1hIEthc2loIEF0YXMgS3VuanVuZ2FuIEFuZGEKQ3VhbiBTZWhhdCBTZWxhbHUbZAIbcDA8eA==#Intent;scheme=rawbt;package=ru.a402d.rawbtprinter;end;">Print Order</a>
-                    <!-- <button type="button" class="btn btn-block btn-secondary" data-toggle="modal" data-target="#modal-default">
-                  .......
-                </button> -->
                 </div>
             </div>
             <br>
@@ -206,8 +200,8 @@
               <input type="hidden" id="order_id" name="order_id">
               <table>
                 <tr>
-                  <td><button class="btn btn-block btn-success" type="button" id="order_selesai" name="order_selesai">ORDER SELESAI</button></td>
-                  <td><button class="btn btn-block btn-danger" type="button" id="order_cancel" name="order_cancel">CANCEL ORDER</button></td>
+                  <td><button class="btn btn-success" type="button" id="order_selesai" name="order_selesai" style="display: none;">ORDER SELESAI</button></td>
+                  <!-- <td><button class="btn btn-block btn-danger" type="button" id="order_cancel" name="order_cancel">CANCEL ORDER</button></td> -->
                 </tr>
               </table>
             </div>
@@ -225,6 +219,7 @@
         }
 
         function tutup_modal(){
+          $('#order_selesai').hide();
           $('#modal-default').modal('hide');
         }
 
@@ -232,16 +227,17 @@
 					var button = $(event.relatedTarget)
 					var recipient = button.data('whatever')
 					var modal = $(this);
-					var dataString = 'id=' + recipient
+					var dataString = 'id=' + recipient;
           
           $.get("<?php echo base_url().'Bersih/get_order_masuk_data'?>", dataString, function(data){
             $('#order_dt_masuk').html(data.order[0].order_dt_create);
             $('#order_user_create').html(data.order[0].order_user_create);
             $('#order_id').val(recipient);
-
+            var cek_selesai = data.order[0].order_selesai;
             var html = '';
             var i;
             var total_sub = 0;
+            
             for(i=0; i < data.detail_order.length; i++){
                 html += `
                     <tr>
@@ -252,12 +248,14 @@
                         <td style="text-align: right;">${uang(data.detail_order[i].sub_total)}</td>
                     </tr>
                 `;
-
                 total_sub += parseInt(data.detail_order[i].sub_total);
             }
 
             $('#isi_tbl_detail_order').html(html);
             $('#total_sub').html(uang(total_sub));
+            if(cek_selesai == 0){
+              $('#order_selesai').show();
+            }
           }, 'json');
 				});
 
@@ -266,10 +264,18 @@
           var dataString = 'id='+id;
 
           $.post("<?php echo base_url().'Bersih/order_selesai'?>", dataString, function(){
+            print_struk(id);
             tutup_modal();
             $('#tbl_stok_in').DataTable().ajax.reload();
           });
         });
+
+        function print_struk(kode){
+          var dataString = "kode="+kode;
+          $.get("<?php echo base_url('Bersih/cetak_struk_db')?>", dataString, function(data){
+            window.location.href = data;
+          });
+        }
       </script>
   <?php $this->load->view('mainmenu/admin_footer'); ?>
   </div>

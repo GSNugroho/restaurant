@@ -98,11 +98,11 @@ class Bersih extends CI_Controller {
             'order_id' => $this->input->post('kode', true),
             'order_nm_pemesan' => $this->input->post('pelanggan_nm', true),
             'order_bayar' => $this->input->post('pelanggan_byr', true),
-            'order_diskon' => $this->input->post('pelanggan_diskon', true),
             'order_total_pesanan' => $this->input->post('total_byr_pesanan', true),
             'order_dt_create' => date('Y-m-d H:i:s'),
             'order_user_create' => $this->session->userdata('nama'),
             'order_aktif' => 1,
+            'order_selesai' => 0,
             'order_keterangan' => $this->input->post('keterangan', true)
         );
 
@@ -844,7 +844,7 @@ class Bersih extends CI_Controller {
             $printer->setJustification($printer::JUSTIFY_LEFT);
             foreach($data as $row){
                 $printer->text($row['produk_nama']."\n");
-                $printer->text(" Rp ".number_format($row['produk_harga'], 0, ',', '.')." x ".$row['produk_jumlah']."     =  Rp ".number_format(((int) $row['produk_harga'] * (int) $row['produk_jumlah']), 0, ',', '.')."\n");
+                $printer->text(" Rp ".number_format($row['produk_harga'], 0, ',', '.')." x ".$row['produk_jumlah']."    =  Rp ".number_format(((int) $row['produk_harga'] * (int) $row['produk_jumlah']), 0, ',', '.')."\n");
                 $total = $total + ((int) $row['produk_harga'] * (int) $row['produk_jumlah']);
             }
             $printer->setJustification($printer::JUSTIFY_CENTER);
@@ -879,6 +879,75 @@ class Bersih extends CI_Controller {
             // $printer->cut();
             $printer->pulse();
             $printer->close(); 
+        }
+    }
+    
+    function cetak_struk_db(){
+        $id = $this->input->get('kode', TRUE);
+
+        $cek = $this->M_bersih->get_detail_struk($id);
+        $meja = $this->M_bersih->get_meja_struk($id);
+        foreach($meja as $row){
+            $nomeja =  $row['order_nm_pemesan'];
+        }
+
+        try{
+            $connector = new \Mike42\Escpos\PrintConnectors\RawbtPrintConnector();
+            $printer = new \Mike42\Escpos\Printer($connector, null, 1);
+
+            $tanggal = date('D d M Y H:i');
+            $total = 0;
+
+            // nama toko;
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->selectPrintMode($printer::MODE_DOUBLE_WIDTH);
+            $printer->text("Rumah Makan Kita\n");
+            $printer->selectPrintMode();
+            $printer->text("Jalan Kenanga 14\n");
+            $printer->feed();
+
+            // judul
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("--------------------------------\n");
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            $printer->text("Waktu :");
+            $printer->setJustification($printer::JUSTIFY_RIGHT);
+            $printer->text(" ".$tanggal."\n");
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            $printer->text("Meja No. :");
+            $printer->setJustification($printer::JUSTIFY_RIGHT);
+            $printer->text(" ".$nomeja."\n");
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("--------------------------------\n");
+
+            // isi pesanan
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->setEmphasis(true);
+            $printer->text("PESANAN\n");
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("--------------------------------\n");
+            $printer->setEmphasis(false);
+            $printer->feed();
+            $printer->setJustification($printer::JUSTIFY_LEFT);
+            foreach($cek as $row){
+                $printer->text($row['produk_nama']."\n");
+                $printer->text($row['produk_jumlah']." porsi \n");
+            }
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("--------------------------------\n");
+            $printer->setJustification($printer::JUSTIFY_RIGHT);
+
+            // feed
+            $printer->feed(2);
+            $printer->setJustification($printer::JUSTIFY_CENTER);
+            $printer->text("Terima Kasih Atas Kunjungan Anda\n");
+            $printer->text("Cuan Sehat Selalu");
+            $printer->feed(2);
+        } catch (Exception $e) {
+            echo $e->getMessage(); 
+        } finally {
+            $printer->pulse();
+            $printer->close();
         }
     }
 
