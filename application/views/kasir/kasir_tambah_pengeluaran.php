@@ -50,7 +50,7 @@
                     <div class="form-group">
                         <label>TANGGAL <span style="color: red;">*</span></label>
                         <div class="input-group date" id="tgl_stok_in" data-target-input="nearest" style="width: 80%">
-                          <input class="form-control" type="text" name="tgl_stok_in" id="tgl_stok_in" >
+                          <input class="form-control" type="text" name="tgl_stok_in" id="tgl_stok_in" placeholder="dd-mm-yyyy">
                           <div class="input-group-append" data-target="#tgl_stok_in" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
@@ -102,7 +102,7 @@
                           </td>
                           <td>
                               <div class="form-group">
-                                <input class="form-control" type="text" id="jml_saldo" name="jml_saldo[]" placeholder="Rp 0">
+                                <input class="form-control" type="text" id="jml_saldo" name="jml_saldo[]" placeholder="Rp 0" style="text-align: right;">
                               </div>
                           </td>
                           <td>

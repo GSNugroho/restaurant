@@ -52,7 +52,7 @@
                     <div class="form-group">
                         <label>TANGGAL <span style="color: red;">*</span></label>
                         <div class="input-group date" id="tgl_stok_in" data-target-input="nearest" style="width: 80%">
-                          <input class="form-control" type="text" name="tgl_stok_in" id="tgl_stok_in" >
+                          <input class="form-control" type="text" name="tgl_stok_in" id="tgl_stok_in" placeholder="dd-mm-yyyy">
                           <div class="input-group-append" data-target="#tgl_stok_in" data-toggle="datetimepicker">
                             <div class="input-group-text"><i class="fa fa-calendar"></i></div>
                           </div>
@@ -60,7 +60,7 @@
                     </div>
                     <div class="form-group">
                         <label>CATATAN </label>
-                        <textarea class="form-control" rows="5" style="width: 80%;" id="catatan" name="catatan"></textarea>
+                        <textarea class="form-control" rows="5" style="width: 80%;" id="catatan" name="catatan" placeholder="Masukkan Catatan . . ."></textarea>
                     </div>
                   </div>
                   <div class="col-12">

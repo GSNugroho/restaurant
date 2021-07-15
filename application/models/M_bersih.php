@@ -851,7 +851,11 @@ class M_bersih extends CI_Model{
     }
 
     function get_semua_stok_kotor_js(){
-        $sql = "SELECT * FROM tbl_produk WHERE tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1";
+        $sql = "SELECT * 
+            FROM tbl_produk 
+            WHERE tbl_produk.produk_stok = 1 
+            AND tbl_produk.produk_kategori = 'HT-000002'
+            AND tbl_produk.produk_aktif = 1";
         $query = $this->db->query($sql);
         return $query->result_array();
     }

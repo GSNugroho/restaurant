@@ -152,7 +152,7 @@
                         $(wrapper).on("click",".remove_field", function(e){
                           e.preventDefault(); $(this).closest('tr').remove(); 
                           if(no != 1){
-                            no--;
+                            no+=1;
                           }
                         })
                     }else{

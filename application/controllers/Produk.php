@@ -535,11 +535,13 @@ class Produk extends CI_Controller{
 			'resep_produk_id' => $resep[0][0]
 		);
 		for($i=0; $i < count($resep); $i++){
-			array_push($array_resep, array(
-				'resep_produk_id' => $resep[$i][0],
-				'resep_produk_bb' => $resep[$i][1],
-				'resep_produk_jml' => $resep[$i][2]
-			));
+			if($resep[$i][0] != ''){
+				array_push($array_resep, array(
+					'resep_produk_id' => $resep[$i][0],
+					'resep_produk_bb' => $resep[$i][1],
+					'resep_produk_jml' => $resep[$i][2]
+				));
+			}
 		}
 
 		print_r($array_resep);

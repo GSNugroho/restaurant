@@ -13,8 +13,8 @@ class Welcome extends CI_Controller {
 	}
 
 	function cek_user(){
-		$username=strip_tags(stripslashes($this->input->post('username',TRUE)));
-        $password=strip_tags(stripslashes($this->input->post('password',TRUE)));
+		$username=htmlspecialchars(strip_tags(stripslashes($this->input->post('username',TRUE))), ENT_QUOTES);
+        $password=htmlspecialchars(strip_tags(stripslashes($this->input->post('password',TRUE))), ENT_QUOTES);
 
         $cek = $this->M_welcome->cek_login($username, $password);
         if($cek->num_rows() > 0){
