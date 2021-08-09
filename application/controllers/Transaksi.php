@@ -28,9 +28,36 @@ class Transaksi extends CI_Controller {
             'stok_out_ini_nc' => $this->M_transaksi->get_data_stok_out_ini_nc($bulan, $tahun),
             'pos' => $this->M_transaksi->get_semua_pos(),
             'biaya' => $this->M_transaksi->get_detail_biaya($bulan, $tahun),
+            'bulan' => $bulan,
+            'tahun' => $tahun
         );
 
         $this->load->view('bersih/bersih_laba_rugi_detail.php', $data);
+    }
+
+    function downloadlaporanlabafull(){
+        $bulan = $this->input->post('bulan', TRUE);
+        $tahun = $this->input->post('tahun', TRUE);
+
+        $data = array(
+            'penjualan' => $this->M_transaksi->get_data_penjualan($bulan, $tahun),
+            'stok_in_sblm' => $this->M_transaksi->get_data_stok_in_sblm($bulan, $tahun),
+            'stok_out_sblm' => $this->M_transaksi->get_data_stok_out_sblm($bulan, $tahun),
+            'stok_in_ini' => $this->M_transaksi->get_data_stok_in_ini($bulan, $tahun),
+            'stok_out_ini' => $this->M_transaksi->get_data_stok_out_ini($bulan, $tahun),
+            'stok_out_ini_nc' => $this->M_transaksi->get_data_stok_out_ini_nc($bulan, $tahun),
+            'pos' => $this->M_transaksi->get_semua_pos(),
+            'biaya' => $this->M_transaksi->get_detail_biaya($bulan, $tahun),
+            'bulan' => $bulan,
+            'tahun' => $tahun
+        );
+
+        $this->load->view('bersih/bersih_laba_rugi_detail.php', $data);
+        $mpdf = new \Mpdf\Mpdf();
+        $html = $this->load->view('bersih/laporan/laporanlabafull.php', $data, TRUE);
+        $mpdf-> AddPage('P');
+        $mpdf->WriteHTML($html);
+        $mpdf->Output();
     }
 
     function buku_besar_biaya(){
@@ -72,6 +99,26 @@ class Transaksi extends CI_Controller {
             $jns_saldo = $this->input->post('jns_saldo', TRUE);
 
             $searchQuery .= " AND tbl_transaksi.jns_saldo = $jns_saldo ";
+        }
+        
+        if($this->input->post('bulan') != ''){
+            $bulan = $this->input->post('bulan', TRUE);
+
+            $searchQuery .= " AND MONTH(tbl_transaksi.tgl_input) = '$bulan' ";
+        }else{
+            $bulan = date('m');
+
+            $searchQuery .= " AND MONTH(tbl_transaksi.tgl_input) = '$bulan' ";
+        }
+
+        if($this->input->post('tahun') != ''){
+            $tahun = $this->input->post('tahun', TRUE);
+
+            $searchQuery .= " AND YEAR(tbl_transaksi.tgl_input) = '$tahun' ";
+        }else{
+            $tahun = date('Y');
+
+            $searchQuery .= " AND YEAR(tbl_transaksi.tgl_input) = '$tahun' ";
         }
 
         $searchQuery .= " AND tbl_transaksi.dt_aktif = 1";

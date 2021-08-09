@@ -35,6 +35,7 @@
             <div class="card card-secondary card-tabs">
               <div class="card-body">
                     <table>
+                      <form method="POST" action="<?php echo base_url('Bersih/printdatalabaharian')?>" target="_blank">
                       <tr>
                         <th style="text-align: center;">Bulan</th>
                         <th></th>
@@ -66,6 +67,10 @@
                             </select>
                         </td>
                         <td>&nbsp;</td>
+                        <td>
+                          <button class="btn btn-danger" type="submit" id="download_laba" name="download_laba">Download Laba Harian</button>
+                        </td>
+                        </form>
                         <td>
                             <button class="btn btn-success" type="submit" id="lihat_laba">Lihat Laba Harian</button>
                         </td>

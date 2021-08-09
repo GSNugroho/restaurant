@@ -29,7 +29,10 @@ class Produk extends CI_Controller{
 	}
 
 	function kurang_stok(){
-		$this->load->view('produk/produk_tambah_stok_keluar');
+		$data = array(
+            'produk' => $this->M_produk->all_produk_out()
+        );
+		$this->load->view('produk/produk_tambah_stok_keluar', $data);
 	}
 
     function tbl_produk(){
@@ -258,6 +261,22 @@ class Produk extends CI_Controller{
 		ats_nm_rekening like '%".$searchValue."%' ) ";
 		}
 
+		if($this->input->post('bulan', TRUE) != ''){
+			$bulan = $this->input->post('bulan', TRUE);
+			$searchQuery .= " AND MONTH(tbl_stok_in.stok_in_dt_masuk) = '$bulan' ";
+		}else{
+			$bulan = date('m');
+			$searchQuery .= " AND MONTH(tbl_stok_in.stok_in_dt_masuk) = '$bulan' ";
+		}
+
+		if($this->input->post('tahun', TRUE) != ''){
+			$tahun = $this->input->post('tahun', TRUE);
+			$searchQuery .= " AND YEAR(tbl_stok_in.stok_in_dt_masuk) = '$tahun' ";
+		}else{
+			$tahun = date('Y');
+			$searchQuery .= " AND YEAR(tbl_stok_in.stok_in_dt_masuk) = '$tahun' ";
+		}
+
 		## Total number of records without filtering
 		$records = $this->M_produk->get_all_stok_in();
 		foreach($records->result_array() as $row){
@@ -317,6 +336,22 @@ class Produk extends CI_Controller{
 		ats_nm_rekening like '%".$searchValue."%' ) ";
 		}
 
+		if($this->input->post('bulan', TRUE) != ''){
+			$bulan = $this->input->post('bulan', TRUE);
+			$searchQuery .= " AND MONTH(tbl_stok_out.stok_out_dt_masuk) = '$bulan' ";
+		}else{
+			$bulan = date('m');
+			$searchQuery .= " AND MONTH(tbl_stok_out.stok_out_dt_masuk) = '$bulan' ";
+		}
+
+		if($this->input->post('tahun', TRUE) != ''){
+			$tahun = $this->input->post('tahun', TRUE);
+			$searchQuery .= " AND YEAR(tbl_stok_out.stok_out_dt_masuk) = '$tahun' ";
+		}else{
+			$tahun = date('Y');
+			$searchQuery .= " AND YEAR(tbl_stok_out.stok_out_dt_masuk) = '$tahun' ";
+		}
+
 		## Total number of records without filtering
 		$records = $this->M_produk->get_all_stok_out();
 		foreach($records->result_array() as $row){
@@ -343,7 +378,7 @@ class Produk extends CI_Controller{
 
             $data[] = array( 
                 "stok_out_dt_create"=>$row['stok_out_dt_create'],
-                "stok_out_id"=>$row['stok_out_id'],
+                "catatan"=>$row['catatan'],
                 "stok_out_dt_masuk"=>$row['stok_out_dt_masuk'],
                 "cek"=>$cek
             );
@@ -501,6 +536,22 @@ class Produk extends CI_Controller{
 
 		$this->M_produk->insert_stok_in($data);
 
+		require_once(APPPATH.'views/vendor/autoload.php');
+		$options = array(
+			'cluster' => 'ap1',
+			'useTLS' => false
+		);
+
+		$pusher = new Pusher\Pusher(
+			'fbc78684682a51811d95',
+			'f6fee814ca2dba39757b',
+			'1246064',
+			$options
+		);
+
+		$data['message'] = 'hello';
+		$pusher->trigger('my-channel', 'my-event', $data);
+
 		redirect('Administrator/stok_in');
 	}
 
@@ -556,7 +607,8 @@ class Produk extends CI_Controller{
 			'stok_out_dt_masuk' => date('Y-m-d', strtotime($this->input->post('tgl_stok_out', true))),
 			'stok_out_dt_create' => date('Y-m-d H:i:s'),
 			'stok_out_user_create' => $this->session->userdata('nama'),
-			'stok_out_aktif' => 1
+			'stok_out_aktif' => 1,
+			'catatan' => $this->input->post('catatan', TRUE)
 		);
 
 		$produk_nm = $this->input->post('produk_nm', true);
@@ -642,7 +694,11 @@ class Produk extends CI_Controller{
 		$data = array(
             'produk' => $this->M_produk->all_stok_produk(),
             'stokin' => $this->M_produk->all_stok_in(),
-            'stokout' => $this->M_produk->all_stok_out()
+            'stokout' => $this->M_produk->all_stok_out(),
+			'stokin_sblm' => $this->M_produk->all_stok_in_sblm(),
+			'stokout_sblm' => $this->M_produk->all_stok_out_sblm(),
+			'stokout_1hari' => $this->M_produk->all_out_1habis(),
+			'stokout_1hari_sblm' => $this->M_produk->all_out_1habis_sblm()
         );
 
         echo json_encode($data);

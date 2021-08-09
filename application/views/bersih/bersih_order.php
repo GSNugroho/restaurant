@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="<?php echo base_url().'assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'?>">
 <link rel="stylesheet" href="<?php echo base_url().'assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'?>">
 <link rel="stylesheet" href="<?php echo base_url().'assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'?>">
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -47,7 +48,84 @@
                                 <!-- /.input group -->
                             </div>
                         </div>
+                        <div class="col-2">
+                          <div class="form-group">
+                            <label>Tanggal</label>
+                            <select class="form-control" name="tanggal" id="tanggal">
+                              <option value=""></option>
+                              <option value="1">1</option>
+                              <option value="2">2</option>
+                              <option value="3">3</option>
+                              <option value="4">4</option>
+                              <option value="5">5</option>
+                              <option value="6">6</option>
+                              <option value="7">7</option>
+                              <option value="8">8</option>
+                              <option value="9">9</option>
+                              <option value="10">10</option>
+                              <option value="11">11</option>
+                              <option value="12">12</option>
+                              <option value="13">13</option>
+                              <option value="14">14</option>
+                              <option value="15">15</option>
+                              <option value="16">16</option>
+                              <option value="17">17</option>
+                              <option value="18">18</option>
+                              <option value="19">19</option>
+                              <option value="20">20</option>
+                              <option value="21">21</option>
+                              <option value="22">22</option>
+                              <option value="23">23</option>
+                              <option value="24">24</option>
+                              <option value="25">25</option>
+                              <option value="26">26</option>
+                              <option value="27">27</option>
+                              <option value="28">28</option>
+                              <option value="29">29</option>
+                              <option value="30">30</option>
+                              <option value="31">31</option>
+                            </select>
+                          </div>
+                        </div>
+                        <div class="col-2">
+                          <div class="form-group">
+                              <label>Bulan</label>
+                              <select class="form-control" name="bulan" id="bulan">
+                                  <option value="">Pilih</option>
+                                  <option value="1">Januari</option>
+                                  <option value="2">Februari</option>
+                                  <option value="3">Maret</option>
+                                  <option value="4">April</option>
+                                  <option value="5">Mei</option>
+                                  <option value="6">Juni</option>
+                                  <option value="7">Juli</option>
+                                  <option value="8">Agustus</option>
+                                  <option value="9">September</option>
+                                  <option value="10">Oktober</option>
+                                  <option value="11">November</option>
+                                  <option value="12">Desember</option>
+                              </select>
+                            </div>
+                        </div>
+                        <div class="col-2">
+                          <label>Tahun</label>
+                          <select class="form-control" name="tahun" id="tahun">
+                          </select>
+                        </div>
                     </div>
+                    <script>
+                      $('#tahun').each(function() {
+                        var year = (new Date()).getFullYear();
+                        var current = year;
+                        year -= 3;
+                        for (var i = 0; i < 6; i++) {
+                        if ((year+i) == current)
+                            $(this).append('<option selected value="' + (year + i) + '">' + (year + i) + '</option>');
+                        else
+                            $(this).append('<option value="' + (year + i) + '">' + (year + i) + '</option>');
+                        }
+                      })
+                    </script>
                     <table id="tbl_stok_in" class="table table-borderless table-striped">
                         <thead>
                         <tr>
@@ -74,9 +152,16 @@
     <!-- /.content -->
     <script>
     $(document).ready(function() {
-      setInterval(function(){ 
+      Pusher.logToConsole = true;
+
+      var pusher = new Pusher('fbc78684682a51811d95', {
+        cluster: 'ap1'
+      });
+
+      var channel = pusher.subscribe('my-channel');
+      channel.bind('my-event', function(data) {
         $('#tbl_stok_in').DataTable().ajax.reload();
-      }, 30000);
+      });
 
       var table = $('#tbl_stok_in').DataTable({
           language: {
@@ -86,7 +171,7 @@
               "sZeroRecords": "Tidak ditemukan data yang sesuai",
               "sInfo": "Total _TOTAL_ entri",
               "sInfoEmpty": "Total 0 entri",
-              "sInfoFiltered": "(disaring dari _MAX_ entri keseluruhan)",
+              "sInfoFiltered": "",
               "sInfoPostFix": "",
               "sSearch": "Cari:",
               "sUrl": "",
@@ -122,8 +207,14 @@
               'url': '<?php echo base_url().'Bersih/tbl_order'?>',
               'data': function(data){
                 var cari_produk = $('#cari_produk').val();
+                var tanggal = $('#tanggal option:selected').val();
+                var bulan = $('#bulan option:selected').val();
+                var tahun = $('#tahun option:selected').val();
 
                 data.searchCari = cari_produk;
+                data.tanggal = tanggal;
+                data.bulan = bulan;
+                data.tahun = tahun;
               }
           },
           'columns': [
@@ -148,6 +239,18 @@
       $('#cari_produk').on('keyup', function(){
         $('#tbl_stok_in').DataTable().ajax.reload();
       });
+
+      $('#tanggal').on('click', function(){
+        $('#tbl_stok_in').DataTable().ajax.reload();
+      });
+
+      $('#bulan').on('click', function(){
+        $('#tbl_stok_in').DataTable().ajax.reload();
+      });
+
+      $('#tahun').on('click', function(){
+        $('#tbl_stok_in').DataTable().ajax.reload();
+      })
 
     });
     </script>

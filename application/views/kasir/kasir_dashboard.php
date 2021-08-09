@@ -34,6 +34,18 @@
     box-shadow: 0 5px #666;
     transform: translateY(4px);
     }
+
+    #inner-right {
+      height: 500px;
+      max-height: 500px;
+      overflow-y: scroll;
+      /* background: ivory; */
+    }
+
+    #inner-over-right {
+      max-height: 554px;
+      overflow-y: scroll;
+    }
 </style>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -58,16 +70,16 @@
         <div class="row">
           <div class="col-6">
             <div class="card">
-                <div>
-                  <div class="btn-group w-100 mb-2">
+              <div>
+                <div class="btn-group w-100 mb-2">
                     <a class="btn btn-secondary active" href="javascript:void(0)" data-filter="all"> All items </a>
                     <?php 
                         foreach($kategori->result_array() as $row){
-                            if($row['kategori_id'] != 'HT-000002' && $row['kategori_id'] != 'HT-000005'){
+                          if($row['kategori_id'] != 'HT-000002' && $row['kategori_id'] != 'HT-000005'){
                               echo '<a class="btn btn-secondary" href="javascript:void(0)" data-filter="'.$row['kategori_id'].'"> '.$row['kategori_nama'].' </a>';
                             }
-                        }
-                    ?>
+                          }
+                          ?>
                   </div>
                   <div class="mb-2" style="margin-left: 1px;">
                     <!-- <a class="btn btn-secondary" href="javascript:void(0)" data-shuffle> Shuffle items </a> -->
@@ -84,6 +96,7 @@
                   </div>
                 </div>
                 <div>
+                <div id="inner-right">
                   <div class="filter-container">
                     <?php
                         foreach($produk->result_array() as $row){
@@ -98,6 +111,7 @@
                     ?>
                   </div>
                 </div>
+            </div>
             </div>
             <script>
             function uang(uang){
@@ -140,15 +154,16 @@
                                 <td id="produk_harga${no}" style="text-align: right;">${uang(data[0].produk_harga)}</td>
                                 <td id="produk_id${no}" style="display: none;">${value}</td>
                                 <td id="produk_edit${no}">
-                                  <a href="#" class="remove_field" style="color: red;">
-                                    <i class="nav-icon fas fa-trash text-danger"></i>
-                                  </a>
+                                  
                                 </td>
                             </tr>`;
 
                             $('#isi_tbl_pesanan').append(html);
                             no++;
                         }, 'json');
+                        // <a href="#" class="remove_field" style="color: red;">
+                        //             <i class="nav-icon fas fa-trash text-danger"></i>
+                        //           </a>
                         $(wrapper).on("click",".remove_field", function(e){
                           e.preventDefault(); $(this).closest('tr').remove(); 
                           if(no != 1){
@@ -190,15 +205,17 @@
                                   <td id="produk_harga${no}" style="text-align: right;">${uang(data[0].produk_harga)}</td>
                                   <td id="produk_id${no}" style="display: none;">${value}</td>
                                   <td id="produk_edit${no}">
-                                    <a href="#" class="remove_field" style="color: red;">
-                                      <i class="nav-icon fas fa-trash text-danger"></i>
-                                    </a>
+                                    
                                   </td>
                               </tr>`;
 
                               $('#isi_tbl_pesanan').append(html);
                               no++;
                           }, 'json');
+
+                          // <a href="#" class="remove_field" style="color: red;">
+                          //             <i class="nav-icon fas fa-trash text-danger"></i>
+                          //           </a>
 
                           $(wrapper).on("click",".remove_field", function(e){
                           e.preventDefault(); $(this).closest('tr').remove(); 
@@ -213,7 +230,8 @@
             <!-- /.card -->
           </div>
           <div class="col-6">
-          <div class="card">
+            <div class="card" style="height: 554px;">
+              <div id="inner-over-right">
                 <form action="<?php echo base_url().'Bersih/tambah_order_baru';?>" method="post" enctype="multipart/form-data" autocomplete="off">
                   <div class="col-sm-12">
                   <br>
@@ -253,6 +271,7 @@
                     </div>
                   </div>
                 </form>
+              </div>
               <!-- /.card -->
             </div>
           </div>
@@ -442,8 +461,32 @@
         <!-- /.modal-dialog -->
       </div>
       <script>
+        var rupiah55 = document.getElementById('pelanggan_byr');
+        rupiah55.addEventListener('keyup', function(e){
+            rupiah55.value = formatRupiah1(this.value, 'Rp ');
+        });
+
+        function formatRupiah1(angka, prefix){
+            var number_string = angka.replace(/[^,\d]/g, '').toString(),
+            split = number_string.split(','),
+            sisa = split[0].length % 3,
+            rupiah = split[0].substr(0, sisa),
+            ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if(ribuan){
+                separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+
+            rupiah = split[1] != undefined ? rupiah + '.' + split[1] : rupiah;
+            return prefix == undefined ? rupiah : (rupiah ? 'Rp ' + rupiah :'');
+        }
+
         $('#pelanggan_byr').on('keyup', function(){
-          var pelanggan_byr = $('#pelanggan_byr').val();
+          var pelangganbayare = $('#pelanggan_byr').val();
+          var con_ua = pelangganbayare.substr(3, 20);
+					var pelanggan_byr = con_ua.replace(/[.]/g, "");
+
           var kon_total = $('#total_semua').html();
           var total_byr_pesanan = kon_total.replace(/[.]/g, "");
           if(parseInt(total_byr_pesanan) <= pelanggan_byr){
@@ -532,9 +575,13 @@
               data[x].push(kode);
           }
 
+          var pelangganbayare = $('#pelanggan_byr').val();
+          var con_ua = pelangganbayare.substr(3, 20);
+					var hasilbayare = con_ua.replace(/[.]/g, "");
+
           var pelanggan_nm = $('#pelanggan_nm').val();
           var pelanggan_diskon = $('#pelanggan_diskon').val();
-          var pelanggan_byr = $('#pelanggan_byr').val();
+          var pelanggan_byr = hasilbayare;
           var kon_total = $('#total_semua').html();
           var total_byr_pesanan = kon_total.replace(/[.]/g, "");
           var keterangan = $('#keterangan').val();

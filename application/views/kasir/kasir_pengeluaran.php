@@ -63,9 +63,49 @@
                               </select>
                             </div>
                           </td>
+                          <td>
+                            <div class="form-group">
+                              <label>Bulan</label>
+                              <select class="form-control" name="bulan_t" id="bulan_t">
+                                <option value="">Pilih</option>
+                                <option value="1">Januari</option>
+                                <option value="2">Februari</option>
+                                <option value="3">Maret</option>
+                                <option value="4">April</option>
+                                <option value="5">Mei</option>
+                                <option value="6">Juni</option>
+                                <option value="7">Juli</option>
+                                <option value="8">Agustus</option>
+                                <option value="9">September</option>
+                                <option value="10">Oktober</option>
+                                <option value="11">November</option>
+                                <option value="12">Desember</option>
+                              </select>
+                            </div>
+                          </td>
+                          <td>
+                            <div class="form-group">
+                              <label>Tahun</label>
+                              <select class="form-control" name="tahun_t" id="tahun_t">
+                              </select>
+                            </div>
+                          </td>
                         </tr>
                       </table>
                     </div>
+                    <script>
+                      $('#tahun_t').each(function() {
+                        var year = (new Date()).getFullYear();
+                        var current = year;
+                        year -= 3;
+                        for (var i = 0; i < 6; i++) {
+                        if ((year+i) == current)
+                            $(this).append('<option selected value="' + (year + i) + '">' + (year + i) + '</option>');
+                        else
+                            $(this).append('<option value="' + (year + i) + '">' + (year + i) + '</option>');
+                        }
+                      })
+                    </script>
                     <div class="card-body table-responsive p-0">
                       <table id="tbl_transaksi" class="table table-borderless table-striped" style="width:100%;">
                         <thead>
@@ -256,8 +296,12 @@
               'url': '<?php echo base_url().'Transaksi/tbl_transaksi'?>',
               'data': function(data){
                 var jns_saldo = $('#jns_saldo option:selected').val();
+                var bulan = $('#bulan_t option:selected').val();
+                var tahun = $('#tahun_t option:selected').val();
 
                 data.jns_saldo = jns_saldo;
+                data.bulan = bulan;
+                data.tahun = tahun;
               }
           },
           'columns': [
@@ -286,6 +330,14 @@
       });
 
       $('#jns_saldo').on('change', function(){
+        $('#tbl_transaksi').DataTable().ajax.reload();
+      });
+
+      $('#bulan_t').on('change', function(){
+        $('#tbl_transaksi').DataTable().ajax.reload();
+      });
+
+      $('#tahun_t').on('change', function(){
         $('#tbl_transaksi').DataTable().ajax.reload();
       });
     });

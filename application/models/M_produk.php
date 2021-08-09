@@ -60,6 +60,46 @@ class M_produk extends CI_Model{
         return $query->result_array();
     }
 
+    function all_stok_in(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            SUM(CAST(tbl_stok_in_detail.stok_in_detail_jumlah AS FLOAT)) AS produk_jml
+        FROM
+            tbl_stok_in
+            JOIN tbl_stok_in_detail ON tbl_stok_in.stok_in_id = tbl_stok_in_detail.stok_in_detail_id
+            JOIN tbl_produk ON tbl_stok_in_detail.stok_in_detail_produk_id = tbl_produk.produk_id
+        WHERE
+            tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_in.stok_in_aktif = 1 AND DATE_FORMAT(tbl_stok_in.stok_in_dt_masuk, '%d-%m-%Y') = DATE_FORMAT(NOW(), '%d-%m-%Y')
+        GROUP BY 
+            tbl_produk.produk_id, tbl_produk.produk_nama
+        ORDER BY
+            tbl_produk.produk_id ASC";
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function all_stok_in_sblm(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            SUM(CAST(tbl_stok_in_detail.stok_in_detail_jumlah AS FLOAT)) AS produk_jml
+        FROM
+            tbl_stok_in
+            JOIN tbl_stok_in_detail ON tbl_stok_in.stok_in_id = tbl_stok_in_detail.stok_in_detail_id
+            JOIN tbl_produk ON tbl_stok_in_detail.stok_in_detail_produk_id = tbl_produk.produk_id
+        WHERE
+            tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_in.stok_in_aktif = 1 AND DATE_FORMAT(tbl_stok_in.stok_in_dt_masuk, '%d-%m-%Y') != DATE_FORMAT(NOW(), '%d-%m-%Y')
+        GROUP BY 
+            tbl_produk.produk_id, tbl_produk.produk_nama
+        ORDER BY
+            tbl_produk.produk_id ASC";
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
     function get_data_keterangan_stok_in($id){
         $sql = "SELECT
             stok_in_id,
@@ -375,6 +415,7 @@ class M_produk extends CI_Model{
     function get_fetch_stok_out($searchQuery, $columnName, $columnSortOrder, $baris, $rowperpage){
         $sql = "SELECT 
         tbl_stok_out.stok_out_id as stok_out_id,
+        tbl_stok_out.catatan as catatan,
         DATE_FORMAT(tbl_stok_out.stok_out_dt_create, '%d-%m-%Y %H:%i:%s') as stok_out_dt_create,
         DATE_FORMAT(tbl_stok_out.stok_out_dt_masuk, '%d-%m-%Y') as stok_out_dt_masuk
         FROM tbl_stok_out
@@ -397,24 +438,10 @@ class M_produk extends CI_Model{
         return $query->result_array();
     }
 
-    function all_stok_in(){
-        $sql = "SELECT
-            tbl_produk.produk_id AS produk_id,
-            tbl_produk.produk_nama AS produk_nama,
-            SUM(CAST(tbl_stok_in_detail.stok_in_detail_jumlah AS FLOAT)) AS produk_jml
-        FROM
-            tbl_stok_in
-            JOIN tbl_stok_in_detail ON tbl_stok_in.stok_in_id = tbl_stok_in_detail.stok_in_detail_id
-            JOIN tbl_produk ON tbl_stok_in_detail.stok_in_detail_produk_id = tbl_produk.produk_id
-        WHERE
-            tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_in.stok_in_aktif = 1
-        GROUP BY 
-            tbl_produk.produk_id, tbl_produk.produk_nama
-        ORDER BY
-            tbl_produk.produk_id ASC";
-        
+    function all_produk_out(){
+        $sql = "SELECT * FROM tbl_produk JOIN tbl_kategori ON tbl_produk.produk_kategori = tbl_kategori.kategori_id WHERE produk_stok = 1 AND produk_aktif = 1 AND produk_level != 1 ORDER BY produk_id ASC";
         $query = $this->db->query($sql);
-        return $query->result_array();
+        return $query;
     }
 
     function all_stok_out(){
@@ -427,7 +454,67 @@ class M_produk extends CI_Model{
             JOIN tbl_stok_out_detail ON tbl_stok_out.stok_out_id = tbl_stok_out_detail.stok_out_detail_id
             JOIN tbl_produk ON tbl_stok_out_detail.stok_out_detail_produk_id = tbl_produk.produk_id
         WHERE
-            tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_out.stok_out_aktif = 1
+            tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_out.stok_out_aktif = 1 AND DATE_FORMAT(tbl_stok_out.stok_out_dt_masuk, '%d-%m-%Y') = DATE_FORMAT(NOW(), '%d-%m-%Y')
+        GROUP BY 
+            tbl_produk.produk_id, tbl_produk.produk_nama
+        ORDER BY
+            tbl_produk.produk_id ASC";
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function all_out_1habis(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            SUM(CAST(tbl_stok_out_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml
+        FROM
+            tbl_stok_out
+            JOIN tbl_stok_out_detail ON tbl_stok_out.stok_out_id = tbl_stok_out_detail.stok_out_detail_id
+            JOIN tbl_produk ON tbl_stok_out_detail.stok_out_detail_produk_id = tbl_produk.produk_id
+        WHERE
+            tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_out.stok_out_aktif = 1 AND DATE_FORMAT(tbl_stok_out.stok_out_dt_masuk, '%d-%m-%Y') = DATE_FORMAT(NOW(), '%d-%m-%Y') AND tbl_stok_out.stok_out_user_create LIKE '%Dapur Kotor 1%'
+        GROUP BY 
+            tbl_produk.produk_id, tbl_produk.produk_nama
+        ORDER BY
+            tbl_produk.produk_id ASC";
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function all_stok_out_sblm(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            SUM(CAST(tbl_stok_out_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml
+        FROM
+            tbl_stok_out
+            JOIN tbl_stok_out_detail ON tbl_stok_out.stok_out_id = tbl_stok_out_detail.stok_out_detail_id
+            JOIN tbl_produk ON tbl_stok_out_detail.stok_out_detail_produk_id = tbl_produk.produk_id
+        WHERE
+            tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_out.stok_out_aktif = 1 AND DATE_FORMAT(tbl_stok_out.stok_out_dt_masuk, '%d-%m-%Y') != DATE_FORMAT(NOW(), '%d-%m-%Y')
+        GROUP BY 
+            tbl_produk.produk_id, tbl_produk.produk_nama
+        ORDER BY
+            tbl_produk.produk_id ASC";
+        
+        $query = $this->db->query($sql);
+        return $query->result_array();
+    }
+
+    function all_out_1habis_sblm(){
+        $sql = "SELECT
+            tbl_produk.produk_id AS produk_id,
+            tbl_produk.produk_nama AS produk_nama,
+            SUM(CAST(tbl_stok_out_detail.stok_out_detail_jumlah AS FLOAT)) AS produk_jml
+        FROM
+            tbl_stok_out
+            JOIN tbl_stok_out_detail ON tbl_stok_out.stok_out_id = tbl_stok_out_detail.stok_out_detail_id
+            JOIN tbl_produk ON tbl_stok_out_detail.stok_out_detail_produk_id = tbl_produk.produk_id
+        WHERE
+            tbl_produk.produk_stok = 1 AND tbl_produk.produk_aktif = 1 AND tbl_stok_out.stok_out_aktif = 1 AND DATE_FORMAT(tbl_stok_out.stok_out_dt_masuk, '%d-%m-%Y') != DATE_FORMAT(NOW(), '%d-%m-%Y') AND tbl_stok_out.stok_out_user_create LIKE '%Dapur Kotor 1%'
         GROUP BY 
             tbl_produk.produk_id, tbl_produk.produk_nama
         ORDER BY

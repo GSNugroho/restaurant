@@ -35,6 +35,9 @@ hr{
             <div class="row">
                 <div class="col-2">
                     <!-- <button class="btn btn-block btn-outline-secondary">Ekspor Produk</button> -->
+                    <?= form_open('Transaksi/downloadlaporanlabafull', ['target'=>'_blank'], ['bulan'=>$bulan, 'tahun'=>$tahun])?>
+                    <?= form_button(['type'=>'submit','content'=>'Unduh Laba Rugi','class'=>'btn btn-block btn-outline-secondary']) ?>
+                    <?= form_close() ?>
                 </div>
             </div>
             <br>
@@ -83,6 +86,7 @@ hr{
                         $stok_akhir = $siap_jual - $keluar_hpp;
                         $laba_kotor = (int) $uang_masuk - (int) $keluar_hpp
                     ?>
+                    <center>
                       <table border="1" class="table table-borderless" style="width: 80%;">
                             <tr>
                                 <td>Penjualan</td>
@@ -229,6 +233,7 @@ hr{
                                 <td style="text-align: right; background-color: orange;"><p id="laba_rugi_bersih"><?= 'Rp '.number_format(($laba_kotor - $totalsemua), 0, ',', '.');?></p></td>
                             </tr>
                       </table>
+                      </center>
                     </div>
                     </div>
                 </div>

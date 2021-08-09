@@ -107,6 +107,22 @@ class Bersih extends CI_Controller {
         );
 
         $this->M_bersih->insert_order($data);
+
+        require_once(APPPATH.'views/vendor/autoload.php');
+        $optoins = array(
+            'cluster' => 'ap1',
+            'useTLS' => false
+        );
+
+        $pusher = new Pusher\Pusher(
+			'fbc78684682a51811d95',
+			'f6fee814ca2dba39757b',
+			'1246064',
+			$options
+		);
+
+		$data['message'] = 'hello';
+		$pusher->trigger('my-channel', 'my-event', $data);
     }
 
     function tambah_order_baru_detail(){
@@ -217,6 +233,27 @@ class Bersih extends CI_Controller {
             $searchQuery .= " AND tbl_order.order_nm_pemesan LIKE '%$nama%' ";
         }
 
+        if($this->input->post('tanggal') != ''){
+            $tanggal = $this->input->post('tanggal');
+            $searchQuery .= " AND DAY(tbl_order.order_dt_create) = '$tanggal' ";
+        }
+
+        if($this->input->post('bulan') != ''){
+            $bulan = $this->input->post('bulan');
+            $searchQuery .= " AND MONTH(tbl_order.order_dt_create) = '$bulan' ";
+        }else{
+            $bulan = date('m');
+            $searchQuery .= " AND MONTH(tbl_order.order_dt_create) = '$bulan' ";
+        }
+
+        if($this->input->post('tahun') != ''){
+            $tahun = $this->input->post('tahun');
+            $searchQuery .= " AND YEAR(tbl_order.order_dt_create) = '$tahun' ";
+        }else{
+            $tahun = date('Y');
+            $searchQuery .= " AND YEAR(tbl_order.order_dt_create) = '$tahun' ";
+        }
+
 		## Total number of records without filtering
 		$records = $this->M_bersih->get_all_bersih();
 		foreach($records->result_array() as $row){
@@ -281,6 +318,27 @@ class Bersih extends CI_Controller {
         $user_login = $this->session->userdata('nama');
 
         $searchQuery .= " AND tbl_stok_in_bersih.stok_in_user_create LIKE '%$user_login%' ";
+
+        if($this->input->post('tanggal') != ''){
+            $tanggal = $this->input->post('tanggal');
+            $searchQuery .= " AND DAY(tbl_stok_in_bersih.stok_in_dt_masuk) = '$tanggal' ";
+        }
+
+        if($this->input->post('bulan') != ''){
+            $bulan = $this->input->post('bulan');
+            $searchQuery .= " AND MONTH(tbl_stok_in_bersih.stok_in_dt_masuk) = '$bulan' ";
+        }else{
+            $bulan = date('m');
+            $searchQuery .= " AND MONTH(tbl_stok_in_bersih.stok_in_dt_masuk) = '$bulan' ";
+        }
+
+        if($this->input->post('tahun') != ''){
+            $tahun = $this->input->post('tahun');
+            $searchQuery .= " AND YEAR(tbl_stok_in_bersih.stok_in_dt_masuk) = '$tahun' ";
+        }else{
+            $tahun = date('Y');
+            $searchQuery .= " AND YEAR(tbl_stok_in_bersih.stok_in_dt_masuk) = '$tahun' ";
+        }
 
 		## Total number of records without filtering
 		$records = $this->M_bersih->get_all_bersih_stok_in();
@@ -401,6 +459,22 @@ class Bersih extends CI_Controller {
 		ats_nm_rekening like '%".$searchValue."%' ) ";
 		}
 
+        if($this->input->post('bulan', TRUE) != ''){
+			$bulan = $this->input->post('bulan', TRUE);
+			$searchQuery .= " AND MONTH(tbl_stok_out_bersih.stok_out_dt_masuk) = '$bulan' ";
+		}else{
+			$bulan = date('m');
+			$searchQuery .= " AND MONTH(tbl_stok_out_bersih.stok_out_dt_masuk) = '$bulan' ";
+		}
+
+		if($this->input->post('tahun', TRUE) != ''){
+			$tahun = $this->input->post('tahun', TRUE);
+			$searchQuery .= " AND YEAR(tbl_stok_out_bersih.stok_out_dt_masuk) = '$tahun' ";
+		}else{
+			$tahun = date('Y');
+			$searchQuery .= " AND YEAR(tbl_stok_out_bersih.stok_out_dt_masuk) = '$tahun' ";
+		}
+
 		## Total number of records without filtering
 		$records = $this->M_bersih->get_all_stok_out_bersih();
 		foreach($records->result_array() as $row){
@@ -476,6 +550,22 @@ class Bersih extends CI_Controller {
 		$this->M_bersih->insert_data_stok_out($data);
 
         print_r($produk_data);
+
+        require_once(APPPATH.'views/vendor/autoload.php');
+        $options = array(
+            'cluster' => 'ap1',
+            'useTLS' => false
+        );
+
+        $pusher = new Pusher\Pusher(
+			'fbc78684682a51811d95',
+			'f6fee814ca2dba39757b',
+			'1246064',
+			$options
+		);
+
+		$data['message'] = 'hello';
+		$pusher->trigger('my-channel', 'my-event', $data);
 		
 		redirect('Bersih/stok_out');
 	}
@@ -527,6 +617,8 @@ class Bersih extends CI_Controller {
                 'stok_out_detail_produk_id' => $data_nm,
                 'stok_out_detail_jumlah' => $produk_jml[$index_out]
             ));
+
+            $index_out++;
         }
 
 
@@ -537,6 +629,22 @@ class Bersih extends CI_Controller {
         $this->M_bersih->insert_batch_stok_out_kotor($produk_data_out);
 
         $this->M_bersih->insert_stok_out_kotor($data_out);
+
+        require_once(APPPATH.'views/vendor/autoload.php');
+        $options = array(
+			'cluster' => 'ap1',
+			'useTLS' => false
+		);
+
+		$pusher = new Pusher\Pusher(
+			'fbc78684682a51811d95',
+			'f6fee814ca2dba39757b',
+			'1246064',
+			$options
+		);
+
+		$data['message'] = 'hello';
+		$pusher->trigger('my-channel', 'my-event', $data);
 
         redirect('Bersih/stok_in');
     }
@@ -962,5 +1070,30 @@ class Bersih extends CI_Controller {
         $nostruk = 'S'.date('ymd').$nomor;
 
         return $nostruk;
+    }
+
+    function printdatalabaharian(){
+        $bulan = $this->input->post('bulan', TRUE);
+        $tahun = $this->input->post('tahun', TRUE);
+
+        $data = array(
+            'modal' => $this->M_bersih->get_modal_lap($bulan, $tahun),
+            'uang_masuka' => $this->M_bersih->itung_uang_masuk_lap($bulan, $tahun),
+            'uang_hpp' => $this->M_bersih->itung_uang_hpp_lap($bulan, $tahun),
+            'pengeluaran' => $this->M_bersih->itung_uang_pengeluaran_lap($bulan, $tahun),
+            'pembelian_bb' => $this->M_bersih->itung_pembelian_bb_lap($bulan, $tahun),
+            'tanggal' => $this->M_bersih->get_tanggal_lap($bulan, $tahun),
+            'stok_masuk' => $this->M_bersih->get_stok_masuk_lap($bulan, $tahun),
+            'stok_jual' => $this->M_bersih->get_stok_jual_lap($bulan, $tahun),
+            'stok_jual_nc' => $this->M_bersih->get_stok_jual_nc_lap($bulan, $tahun)
+        );
+
+        $mpdf = new \Mpdf\Mpdf();
+        $html = $this->load->view('bersih/laporan/laporanlabaharian.php', $data, TRUE);
+        $mpdf-> AddPage('L');
+        $mpdf->WriteHTML($html);
+        $mpdf->Output();
+
+        // $this->load->view('bersih/laporan/laporanlabaharian.php', $data);
     }
 }

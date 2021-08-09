@@ -3,6 +3,7 @@
 <link rel="stylesheet" href="<?php echo base_url().'assets/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css'?>">
 <link rel="stylesheet" href="<?php echo base_url().'assets/plugins/datatables-responsive/css/responsive.bootstrap4.min.css'?>">
 <link rel="stylesheet" href="<?php echo base_url().'assets/plugins/datatables-buttons/css/buttons.bootstrap4.min.css'?>">
+<script src="https://js.pusher.com/7.0/pusher.min.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -117,10 +118,17 @@
     <script>
     $(document).ready(function() {
         get_data_stok();
-        setInterval(function(){ 
-			get_data_stok();
-            $('#nm_produk').val('');
-		}, 30000);
+        
+        Pusher.logToConsole = true;
+
+        var pusher = new Pusher('fbc78684682a51811d95', {
+        cluster: 'ap1'
+        });
+
+        var channel = pusher.subscribe('my-channel');
+        channel.bind('my-event', function(data) {
+        get_data_stok();
+        });
     });
 
     function uang(uang){

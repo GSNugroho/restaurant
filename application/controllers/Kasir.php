@@ -75,6 +75,27 @@ class Kasir extends CI_Controller {
             $searchQuery .= " AND tbl_order.order_nm_pemesan LIKE '%$nama%' ";
         }
 
+        if($this->input->post('tanggal') != ''){
+            $tanggal = $this->input->post('tanggal');
+            $searchQuery .= " AND DAY(tbl_order.order_dt_create) = '$tanggal' ";
+        }
+
+        if($this->input->post('bulan') != ''){
+            $bulan = $this->input->post('bulan');
+            $searchQuery .= " AND MONTH(tbl_order.order_dt_create) = '$bulan' ";
+        }else{
+            $bulan = date('m');
+            $searchQuery .= " AND MONTH(tbl_order.order_dt_create) = '$bulan' ";
+        }
+
+        if($this->input->post('tahun') != ''){
+            $tahun = $this->input->post('tahun');
+            $searchQuery .= " AND YEAR(tbl_order.order_dt_create) = '$tahun' ";
+        }else{
+            $tahun = date('Y');
+            $searchQuery .= " AND YEAR(tbl_order.order_dt_create) = '$tahun' ";
+        }
+
 		## Total number of records without filtering
 		$records = $this->M_kasir->get_all_order();
 		foreach($records->result_array() as $row){
