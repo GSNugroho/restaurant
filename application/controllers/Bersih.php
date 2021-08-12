@@ -914,9 +914,9 @@ class Bersih extends CI_Controller {
             // nama toko;
             $printer->setJustification($printer::JUSTIFY_CENTER);
             $printer->selectPrintMode($printer::MODE_DOUBLE_WIDTH);
-            $printer->text("Rumah Makan Kita\n");
+            $printer->text("Warung Adilaya\n");
             $printer->selectPrintMode();
-            $printer->text("Jalan Kenanga 14\n");
+            $printer->text("Jalan Kenanga 20, Surakarta\n");
             $printer->feed();
 
             // judul
@@ -1009,9 +1009,9 @@ class Bersih extends CI_Controller {
             // nama toko;
             $printer->setJustification($printer::JUSTIFY_CENTER);
             $printer->selectPrintMode($printer::MODE_DOUBLE_WIDTH);
-            $printer->text("Rumah Makan Kita\n");
+            $printer->text("Warung Adilaya\n");
             $printer->selectPrintMode();
-            $printer->text("Jalan Kenanga 14\n");
+            $printer->text("Jalan Kenanga 20, Surakarta\n");
             $printer->feed();
 
             // judul
