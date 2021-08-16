@@ -100,6 +100,7 @@
                             <th style="text-align: right;">Kas Masuk</th>
                             <th style="text-align: right;">Kas Keluar</th>
                             <th style="text-align: right;">Saldo</th>
+                            <th style="text-align: right">Stok Awal</th>
                             <th style="text-align: right;">Stok Masuk</th>
                             <th style="text-align: right;">Stok Keluar</th>
                             <th style="text-align: right;">Sisa Stok</th>
@@ -164,6 +165,8 @@
               var beli_stok = 0;
               var harga_jual = 0;
               var jual_stok = 0;
+              var masuk_sblm = 0;
+              var jual_sblm = 0;
               
 
               for(var y=0; y < data.stok_masuk.length; y++){
@@ -192,17 +195,38 @@
                 }
               }
 
+              for(var a=0; a < data.stok_masuk_bb.length; a++){
+                if(data.stok_masuk_bb[a].stok_in_dt_masuk < data.tanggal[x].stok_in_dt_masuk){
+                  masuk_sblm += data.stok_masuk_bb[a].jumlah_stok * data.stok_masuk_bb[a].harga;
+                }
+              }
+
+              for(var b=0; b < data.stok_jual_bb.length; b++){
+                if(data.stok_jual_bb[b].stok_out_dt_masuk < data.tanggal[x].stok_in_dt_masuk){
+                  jual_sblm += data.stok_jual_bb[b].jumlah_stok * data.stok_jual_bb[b].harga;
+                }
+              }
+
+              for(var c=0; c < data.stok_jual_nc_bb.length; c++){
+                if(data.stok_jual_nc_bb[c].stok_out_dt_masuk < data.tanggal[x].stok_in_dt_masuk){
+                  jual_sblm += data.stok_jual_nc_bb[c].jumlah_stok * data.stok_jual_nc_bb[c].harga;
+                }
+              }
+
               // kas masuk
               htmla += `<td style="text-align: right;">${uang(harga_jual)}</td>`;
 
               // kas keluar
-              htmla += `<td style="text-align: right;">${uang(beli_stok)}</td>`;
+              htmla += `<td style="text-align: right;">${uang(parseInt(beli_stok))}</td>`;
 
               // saldo
-              htmla += `<td style="text-align: right;">${uang(modal_awal - beli_stok + harga_jual)}</td>`;
+              htmla += `<td style="text-align: right;">${uang(modal_awal - parseInt(beli_stok) + harga_jual)}</td>`;
+
+              // stok awal
+              htmla += `<td style="text-align: right;">${uang(parseInt(masuk_sblm - jual_sblm))}</td>`;
 
               // stok masuk
-              htmla += `<td style="text-align: right;">${uang(beli_stok)}</td>`;
+              htmla += `<td style="text-align: right;">${uang(parseInt(beli_stok))}</td>`;
 
               // stok keluar
               htmla += `<td style="text-align: right;">${uang(parseInt(jual_stok))}</td>`;
@@ -211,46 +235,16 @@
               htmla += `<td style="text-align: right;">${uang(parseInt(stok_awal + beli_stok - jual_stok))}</td>`;
 
               // semua aset
-              htmla += `<td style="text-align: right;">${uang((modal_awal - beli_stok + harga_jual) + (parseInt(stok_awal + beli_stok - jual_stok)))}</td>`;
+              htmla += `<td style="text-align: right;">${uang((modal_awal - parseInt(beli_stok) + harga_jual) + (parseInt(stok_awal + beli_stok - jual_stok)))}</td>`;
 
               // laba
               htmla += `<td style="text-align: right;">${uang(harga_jual - parseInt(jual_stok))}</td>`;
 
-              modal_awal = modal_awal - beli_stok + harga_jual;
-              stok_awal = stok_awal + beli_stok - parseInt(jual_stok);
+              modal_awal = modal_awal - parseInt(beli_stok) + harga_jual;
+              stok_awal = stok_awal + parseInt(beli_stok) - parseInt(jual_stok);
               kas_awal = 0;
             }
             htmla += `</tr>`;
-
-            // for(var i=0; i < data.pembelian_bb.length; i++){
-            //   pembelian_bb += parseInt(data.pembelian_bb[i].jumlah) * parseInt(data.pembelian_bb[i].harga);
-            // }
-
-            // for(var i=0; i < data.uang_masuk.length; i++){
-            //     uang_masuk += parseInt(data.uang_masuk[i].jumlah) * parseInt(data.uang_masuk[i].harga);
-            // }
-
-            // for(var i=0; i < data.uang_hpp.length; i++){
-            //     uang_hpp += parseFloat(data.uang_hpp[i].jumlah) * parseInt(data.uang_hpp[i].harga);
-            // }
-
-            // for(var i=0; i < data.pengeluaran.length; i++){
-            //     pengeluaran += parseInt(data.pengeluaran[i].jumlah) * parseInt(data.pengeluaran[i].harga);
-            // }
-
-            // laba = uang_masuk - parseInt(uang_hpp);
-
-            // sisa_modal = parseInt(modal) - parseInt(pembelian_bb);
-
-            // sisa_aset = parseInt(pembelian_bb) - parseInt(uang_hpp);
-
-            // $('#uang_masuk').html(uang(uang_masuk));
-            // $('#uang_hpp').html(uang(parseInt(uang_hpp)));
-            // $('#pembelian_bb').html(uang(parseInt(pembelian_bb)));
-            // $('#sisa_modal').html(uang(parseInt(sisa_modal)));
-            // // $('#pengeluaran').html(uang(pengeluaran));
-            // $('#uang_laba').html(uang(laba));
-            // $('#sisa_aset').html(uang(sisa_aset));
             $('#isi-table-laba').html(htmla);
         }, 'json');
     }
@@ -280,6 +274,8 @@
               var beli_stok = 0;
               var harga_jual = 0;
               var jual_stok = 0;
+              var masuk_sblm = 0;
+              var jual_sblm = 0;
               
 
               for(var y=0; y < data.stok_masuk.length; y++){
@@ -288,14 +284,12 @@
                 }
               }
              
-
               for(var w=0; w < data.uang_masuk.length; w++){
                 if(data.uang_masuk[w].tgl_order == data.tanggal[x].stok_in_dt_masuk){
                   harga_jual += data.uang_masuk[w].jumlah * data.uang_masuk[w].harga;
                 }
               }
               
-
               for(var z=0; z < data.stok_jual.length; z++){
                 if(data.stok_jual[z].stok_out_dt_masuk == data.tanggal[x].stok_in_dt_masuk){
                   jual_stok += data.stok_jual[z].jumlah_stok * data.stok_jual[z].harga;
@@ -308,17 +302,38 @@
                 }
               }
 
+              for(var a=0; a < data.stok_masuk_bb.length; a++){
+                if(data.stok_masuk_bb[a].stok_in_dt_masuk == data.tanggal[x].stok_in_dt_masuk){
+                  masuk_sblm += data.stok_masuk_bb[a].jumlah_stok * data.stok_masuk_bb[a].harga;
+                }
+              }
+
+              for(var b=0; b < data.stok_jual_bb.length; b++){
+                if(data.stok_jual_bb[b].stok_out_dt_masuk == data.tanggal[x].stok_in_dt_masuk){
+                  jual_sblm += data.stok_jual_bb[b].jumlah_stok * data.stok_jual_bb[b].harga;
+                }
+              }
+
+              for(var c=0; c < data.stok_jual_nc_bb.length; c++){
+                if(data.stok_jual_nc_bb[c].stok_out_dt_masuk == data.taggal[x].stok_in_dt_masuk){
+                  jual_sblm += data.stok_jual_nc_bb[c].jumlah_stok * data.stok_jual_nc_bb[c].harga;
+                }
+              }
+
               // kas masuk
               htmla += `<td style="text-align: right;">${uang(harga_jual)}</td>`;
 
               // kas keluar
-              htmla += `<td style="text-align: right;">${uang(beli_stok)}</td>`;
+              htmla += `<td style="text-align: right;">${uang(parseInt(beli_stok))}</td>`;
 
               // saldo
-              htmla += `<td style="text-align: right;">${uang(modal_awal - beli_stok + harga_jual)}</td>`;
+              htmla += `<td style="text-align: right;">${uang(modal_awal - parseInt(beli_stok) + harga_jual)}</td>`;
+              
+              // stok awal
+              htmla += `<td style="text-align: right;">${uang(masuk_sblm - jual_sblm)}</td>`;
 
               // stok masuk
-              htmla += `<td style="text-align: right;">${uang(beli_stok)}</td>`;
+              htmla += `<td style="text-align: right;">${uang(parseInt(beli_stok))}</td>`;
 
               // stok keluar
               htmla += `<td style="text-align: right;">${uang(parseInt(jual_stok))}</td>`;
@@ -327,46 +342,17 @@
               htmla += `<td style="text-align: right;">${uang(parseInt(stok_awal + beli_stok - jual_stok))}</td>`;
 
               // semua aset
-              htmla += `<td style="text-align: right;">${uang((modal_awal - beli_stok + harga_jual) + (parseInt(stok_awal + beli_stok - jual_stok)))}</td>`;
+              htmla += `<td style="text-align: right;">${uang((modal_awal - parseInt(beli_stok) + harga_jual) + (parseInt(stok_awal + beli_stok - jual_stok)))}</td>`;
 
               // laba
               htmla += `<td style="text-align: right;">${uang(harga_jual - parseInt(jual_stok))}</td>`;
 
-              modal_awal = modal_awal - beli_stok + harga_jual;
-              stok_awal = stok_awal + beli_stok - parseInt(jual_stok);
+              modal_awal = modal_awal - parseInt(beli_stok) + harga_jual;
+              stok_awal = stok_awal + parseInt(beli_stok) - parseInt(jual_stok);
               kas_awal = 0;
             }
             htmla += `</tr>`;
 
-            // for(var i=0; i < data.pembelian_bb.length; i++){
-            //   pembelian_bb += parseInt(data.pembelian_bb[i].jumlah) * parseInt(data.pembelian_bb[i].harga);
-            // }
-
-            // for(var i=0; i < data.uang_masuk.length; i++){
-            //     uang_masuk += parseInt(data.uang_masuk[i].jumlah) * parseInt(data.uang_masuk[i].harga);
-            // }
-
-            // for(var i=0; i < data.uang_hpp.length; i++){
-            //     uang_hpp += parseFloat(data.uang_hpp[i].jumlah) * parseInt(data.uang_hpp[i].harga);
-            // }
-
-            // for(var i=0; i < data.pengeluaran.length; i++){
-            //     pengeluaran += parseInt(data.pengeluaran[i].jumlah) * parseInt(data.pengeluaran[i].harga);
-            // }
-
-            // laba = uang_masuk - parseInt(uang_hpp);
-
-            // sisa_modal = parseInt(modal) - parseInt(pembelian_bb);
-
-            // sisa_aset = parseInt(pembelian_bb) - parseInt(uang_hpp);
-
-            // $('#uang_masuk').html(uang(uang_masuk));
-            // $('#uang_hpp').html(uang(parseInt(uang_hpp)));
-            // $('#pembelian_bb').html(uang(parseInt(pembelian_bb)));
-            // $('#sisa_modal').html(uang(parseInt(sisa_modal)));
-            // // $('#pengeluaran').html(uang(pengeluaran));
-            // $('#uang_laba').html(uang(laba));
-            // $('#sisa_aset').html(uang(sisa_aset));
             $('#isi-table-laba').html(htmla);
         }, 'json');
     })

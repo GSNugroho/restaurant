@@ -804,7 +804,10 @@ class Bersih extends CI_Controller {
             'tanggal' => $this->M_bersih->get_tanggal($bulan, $tahun),
             'stok_masuk' => $this->M_bersih->get_stok_masuk($bulan, $tahun),
             'stok_jual' => $this->M_bersih->get_stok_jual($bulan, $tahun),
-            'stok_jual_nc' => $this->M_bersih->get_stok_jual_nc($bulan, $tahun)
+            'stok_jual_nc' => $this->M_bersih->get_stok_jual_nc($bulan, $tahun),
+            'stok_masuk_bb' => $this->M_bersih->get_stok_masuk_bb($bulan, $tahun),
+            'stok_jual_bb' => $this->M_bersih->get_stok_jual_bb($bulan, $tahun),
+            'stok_jual_nc_bb' => $this->M_bersih->get_stok_jual_nc_bb($bulan, $tahun)
         );
 
         echo json_encode($data);
